@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Diagnóstico Comercial — Gustavo Benedetti</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+:root {
+  --bg: #080808;
+  --surface: #111118;
+  --border: #1e1e28;
+  --accent: #F97316;
+  --accent-dim: rgba(249,115,22,0.10);
+  --text: #e8e8e8;
+  --muted: #4a4a5a;
+  --label: #7a7a8a;
+  --white: #ffffff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+}
+.screen.active { display: flex; }
+
+/* ══════════════════
+   TELA 1 — ENTRADA
+══════════════════ */
+.hero-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 20px; text-align: center;
+}
+.hero-title {
+  font-size: clamp(32px, 8vw, 52px);
+  font-weight: 900; line-height: 1.05;
+  letter-spacing: -0.03em; color: var(--white);
+  text-align: center; margin-bottom: 12px;
+}
+.hero-title span { color: var(--accent); }
+.hero-sub {
+  font-size: 14px; color: var(--label); line-height: 1.65;
+  text-align: center; margin-bottom: 40px; max-width: 320px;
+}
+
+.input-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 10px; display: block; width: 100%; max-width: 360px;
+}
+.input-wrap { position: relative; width: 100%; max-width: 360px; margin-bottom: 12px; }
+.input-prefix {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; font-weight: 600; color: var(--muted); pointer-events: none;
+}
+.main-input {
+  width: 100%; padding: 18px 16px 18px 44px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; color: var(--white);
+  font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 700;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+}
+.main-input::-webkit-outer-spin-button,
+.main-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.main-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.main-input::placeholder { color: #222230; font-size: 15px; font-weight: 400; }
+
+.cta-btn {
+  width: 100%; max-width: 360px;
+  padding: 18px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: 14px;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; letter-spacing: 0.02em;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(249,115,22,0.3);
+}
+.cta-btn:hover { background: #fb923c; }
+.cta-btn:active { transform: scale(0.98); }
+
+/* ══════════════════
+   TELA 2 — PERGUNTA
+══════════════════ */
+.quiz-wrap { width: 100%; max-width: 480px; }
+
+.quiz-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.quiz-counter {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.quiz-pct { font-size: 13px; font-weight: 800; color: var(--accent); }
+
+.progress-track {
+  height: 2px; background: var(--border); border-radius: 2px;
+  overflow: hidden; margin-bottom: 36px;
+}
+.progress-fill {
+  height: 100%; background: var(--accent); border-radius: 2px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(249,115,22,0.5);
+}
+
+.quiz-cat {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+}
+.quiz-q {
+  font-size: clamp(18px, 5vw, 24px); font-weight: 800;
+  color: var(--white); line-height: 1.3;
+  margin-bottom: 28px; letter-spacing: -0.01em;
+}
+
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all 0.2s;
+  font-family: 'Inter', sans-serif; text-align: left; width: 100%;
+  position: relative; overflow: hidden;
+}
+.opt::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: transparent; transition: background 0.2s;
+}
+.opt:active { transform: scale(0.99); }
+.opt.selected { border-color: var(--accent); background: var(--accent-dim); }
+.opt.selected::before { background: var(--accent); }
+
+.opt-circle {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.opt.selected .opt-circle {
+  background: var(--accent); border-color: var(--accent);
+}
+.opt-circle-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--bg); opacity: 0; transition: opacity 0.2s;
+}
+.opt.selected .opt-circle-dot { opacity: 1; }
+
+.opt-text {
+  font-size: 14px; font-weight: 500; color: var(--label); flex: 1;
+  transition: color 0.2s; line-height: 1.4;
+}
+.opt.selected .opt-text { color: var(--white); }
+
+.quiz-actions {
+  display: flex; gap: 10px; align-items: center;
+}
+.btn-back {
+  padding: 15px 20px; background: transparent;
+  border: 1px solid var(--border); border-radius: 12px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  color: var(--muted); cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.btn-back:active { transform: scale(0.97); }
+.btn-next {
+  flex: 1; padding: 15px;
+  background: var(--accent); color: var(--bg);
+  border: none; border-radius: 12px;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(249,115,22,0.25);
+}
+.btn-next:active { transform: scale(0.98); }
+
+/* ══════════════════
+   TELA 3 — RESULTADO
+══════════════════ */
+.result-wrap { width: 100%; max-width: 480px; }
+
+.result-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+}
+.result-stage {
+  font-size: clamp(36px, 9vw, 56px); font-weight: 900;
+  color: var(--white); letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 20px;
+}
+
+.eff-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+}
+.eff-track {
+  flex: 1; height: 4px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+.eff-fill {
+  height: 100%; background: var(--accent); border-radius: 4px;
+  box-shadow: 0 0 10px rgba(249,115,22,0.4);
+}
+.eff-val {
+  font-size: 20px; font-weight: 900; color: var(--accent);
+  flex-shrink: 0;
+}
+
+.result-cards { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.r-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 18px; position: relative; overflow: hidden;
+}
+.r-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+.r-card-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.r-card-val {
+  font-size: 24px; font-weight: 900; color: var(--accent);
+  letter-spacing: -0.02em; line-height: 1;
+}
+.r-card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.result-desc {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 14px 14px 0; padding: 18px 16px;
+  margin-bottom: 24px;
+}
+.result-desc-text {
+  font-size: 13px; color: var(--label); line-height: 1.75; font-weight: 400;
+}
+.result-desc-text strong { color: var(--white); font-weight: 600; }
+
+.btn-restart {
+  width: 100%; padding: 16px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 14px; font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-restart:hover { border-color: var(--accent); color: var(--accent); }
+.btn-restart:active { transform: scale(0.98); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+  background: var(--accent); color: var(--bg);
+  font-size: 13px; font-weight: 700; padding: 12px 22px;
+  border-radius: 100px; z-index: 999; opacity: 0;
+  transition: all 0.3s ease; white-space: nowrap;
+  box-shadow: 0 4px 24px rgba(249,115,22,0.4);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ══ TELA 1 — ENTRADA ══ -->
+<div class="screen active" id="s-hero">
+  <div class="hero-tag">Gustavo Benedetti · Diagnóstico Comercial</div>
+  <h1 class="hero-title">Quanto custa<br>não ter <span>processo?</span></h1>
+  <p class="hero-sub">Informe seu faturamento e responda 8 perguntas. Leva menos de 3 minutos.</p>
+
+  <label class="input-label">Faturamento médio mensal</label>
+  <div class="input-wrap">
+    <span class="input-prefix">R$</span>
+    <input class="main-input" type="number" id="fat-input" placeholder="Ex: 150.000">
+  </div>
+
+  <button class="cta-btn" onclick="startQuiz()">Iniciar diagnóstico →</button>
+</div>
+
+<!-- ══ TELA 2 — QUIZ ══ -->
+<div class="screen" id="s-quiz">
+  <div class="quiz-wrap">
+
+    <div class="quiz-top">
+      <span class="quiz-counter" id="q-counter">Pergunta 1 de 8</span>
+      <span class="quiz-pct" id="q-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="q-progress" style="width:0%"></div>
+    </div>
+
+    <div class="quiz-cat" id="q-cat">—</div>
+    <div class="quiz-q" id="q-text">—</div>
+
+    <div class="options" id="q-options"></div>
+
+    <div class="quiz-actions">
+      <button class="btn-back" onclick="prevQ()">←</button>
+      <button class="btn-next" onclick="nextQ()">Próxima →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ TELA 3 — RESULTADO ══ -->
+<div class="screen" id="s-result">
+  <div class="result-wrap">
+
+    <div class="result-tag">Resultado do diagnóstico</div>
+    <div class="result-stage" id="r-stage">—</div>
+
+    <div class="eff-row">
+      <div class="eff-track"><div class="eff-fill" id="r-eff-fill" style="width:0%"></div></div>
+      <div class="eff-val" id="r-eff-pct">—</div>
+    </div>
+
+    <div class="result-cards">
+      <div class="r-card">
+        <div class="r-card-label">Custo de inércia / mês</div>
+        <div class="r-card-val" id="r-mes">—</div>
+        <div class="r-card-sub">faixa conservadora estimada</div>
+      </div>
+      <div class="r-card">
+        <div class="r-card-label">Custo de inércia / ano</div>
+        <div class="r-card-val" id="r-ano">—</div>
+        <div class="r-card-sub">projeção em 12 meses</div>
+      </div>
+    </div>
+
+    <div class="result-desc">
+      <div class="result-desc-text" id="r-desc">—</div>
+    </div>
+
+    <button class="btn-restart" onclick="restart()">↺ Refazer diagnóstico</button>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PERGUNTAS ──
+const QUESTIONS = [
+  {
+    cat: 'Visibilidade de pipeline',
+    q: 'Você sabe quantas oportunidades reais estão abertas hoje no seu comercial?',
+    opts: [
+      { label: 'Sim — sei exatamente quantas e em qual etapa', score: 2 },
+      { label: 'Parcialmente — tenho uma ideia geral', score: 1 },
+      { label: 'Não — não tenho esse controle', score: 0 },
+    ]
+  },
+  {
+    cat: 'Qualificação',
+    q: 'Você tem critérios claros para separar um lead de uma oportunidade real?',
+    opts: [
+      { label: 'Sim — critérios definidos e documentados', score: 2 },
+      { label: 'Parcialmente — faço isso de forma intuitiva', score: 1 },
+      { label: 'Não — trato todo contato como potencial cliente', score: 0 },
+    ]
+  },
+  {
+    cat: 'Canais de aquisição',
+    q: 'Seu negócio depende de um único canal para gerar novas oportunidades?',
+    opts: [
+      { label: 'Não — tenho múltiplos canais ativos', score: 2 },
+      { label: 'Parcialmente — tenho um principal e outros menores', score: 1 },
+      { label: 'Sim — dependo de um canal só', score: 0 },
+    ]
+  },
+  {
+    cat: 'Ciclo de venda',
+    q: 'Você sabe quanto tempo leva, em média, do primeiro contato ao fechamento?',
+    opts: [
+      { label: 'Sim — tenho esse número monitorado', score: 2 },
+      { label: 'Parcialmente — tenho uma estimativa aproximada', score: 1 },
+      { label: 'Não — nunca medi isso', score: 0 },
+    ]
+  },
+  {
+    cat: 'Follow-up',
+    q: 'Você tem uma cadência estruturada de acompanhamento para cada oportunidade?',
+    opts: [
+      { label: 'Sim — cadência definida e seguida', score: 2 },
+      { label: 'Parcialmente — faço follow-up mas sem padrão fixo', score: 1 },
+      { label: 'Não — ajo quando lembro ou quando o cliente aparece', score: 0 },
+    ]
+  },
+  {
+    cat: 'Gestão de perdas',
+    q: 'Quando uma oportunidade some sem fechar, você sabe em qual etapa ela morreu e por quê?',
+    opts: [
+      { label: 'Sim — registro e analiso os motivos de perda', score: 2 },
+      { label: 'Parcialmente — tenho algumas informações', score: 1 },
+      { label: 'Não — simplesmente seguimos em frente', score: 0 },
+    ]
+  },
+  {
+    cat: 'Métricas e gestão',
+    q: 'Você acompanha indicadores comerciais semanalmente?',
+    opts: [
+      { label: 'Sim — reunião semanal com indicadores definidos', score: 2 },
+      { label: 'Parcialmente — olho de vez em quando', score: 1 },
+      { label: 'Não — só vejo o resultado no fim do mês', score: 0 },
+    ]
+  },
+  {
+    cat: 'Dependência',
+    q: 'Se você parar de vender pessoalmente por 30 dias, sua receita cai de forma significativa?',
+    opts: [
+      { label: 'Não — meu time sustenta a operação', score: 2 },
+      { label: 'Parcialmente — cai um pouco mas se sustenta', score: 1 },
+      { label: 'Sim — sou o principal responsável pelas vendas', score: 0 },
+    ]
+  },
+];
+
+const MAX_SCORE = QUESTIONS.length * 2;
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let faturamento = 0;
+
+// ── ESTÁGIOS ──
+const STAGES = [
+  {
+    min: 0, max: 25,
+    name: 'Estágio Caótico',
+    eff: 35,
+    mesMin: 0.35, mesMax: 0.50,
+    desc: 'O comercial opera no improviso. <strong>Cada venda depende de quem está vendendo</strong> — não do processo. O risco de perda de receita é alto e constante.',
+  },
+  {
+    min: 26, max: 50,
+    name: 'Estágio Reativo',
+    eff: 52,
+    mesMin: 0.20, mesMax: 0.35,
+    desc: 'Seu comercial funciona, mas ainda depende de quem executa. Quando um bom vendedor sai, <strong>a receita cai junto</strong>. O processo existe na cabeça — não no negócio.',
+  },
+  {
+    min: 51, max: 75,
+    name: 'Estágio Estruturado',
+    eff: 70,
+    mesMin: 0.08, mesMax: 0.20,
+    desc: 'Você tem fundamentos. O próximo nível é <strong>previsibilidade total</strong> — saber exatamente quanto vai faturar antes do mês começar.',
+  },
+  {
+    min: 76, max: 100,
+    name: 'Estágio Previsível',
+    eff: 88,
+    mesMin: 0.03, mesMax: 0.08,
+    desc: '<strong>Seu comercial é um ativo</strong>, não uma dependência. O foco agora é escala — aumentar o volume sem perder a eficiência que você construiu.',
+  },
+];
+
+function fmtR(n) {
+  if (n >= 1000000) return 'R$ ' + (n / 1000000).toFixed(1).replace('.', ',') + 'M';
+  if (n >= 1000) return 'R$ ' + Math.round(n / 1000) + 'k';
+  return 'R$ ' + Math.round(n).toLocaleString('pt-BR');
+}
+
+// ── NAVEGAÇÃO ──
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+  const val = parseFloat(document.getElementById('fat-input').value);
+  if (!val || val <= 0) { toast('Informe seu faturamento para continuar'); return; }
+  faturamento = val;
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  renderQ();
+  show('s-quiz');
+}
+
+function renderQ() {
+  const q = QUESTIONS[current];
+  const pct = Math.round((current / QUESTIONS.length) * 100);
+
+  document.getElementById('q-counter').textContent = `Pergunta ${current + 1} de ${QUESTIONS.length}`;
+  document.getElementById('q-pct').textContent = pct + '%';
+  document.getElementById('q-progress').style.width = pct + '%';
+  document.getElementById('q-cat').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.q;
+
+  const optsEl = document.getElementById('q-options');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt' + (answers[current] === i ? ' selected' : '');
+    btn.innerHTML = `
+      <div class="opt-circle"><div class="opt-circle-dot"></div></div>
+      <span class="opt-text">${opt.label}</span>
+    `;
+    btn.onclick = () => {
+      document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+      btn.classList.add('selected');
+      answers[current] = i;
+    };
+    optsEl.appendChild(btn);
+  });
+}
+
+function nextQ() {
+  if (answers[current] === null) { toast('Selecione uma opção para continuar'); return; }
+  if (current < QUESTIONS.length - 1) {
+    current++;
+    renderQ();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (current > 0) { current--; renderQ(); }
+  else show('s-hero');
+}
+
+function showResult() {
+  // Calcular score
+  let total = 0;
+  answers.forEach((a, i) => { if (a !== null) total += QUESTIONS[i].opts[a].score; });
+  const pct = Math.round((total / MAX_SCORE) * 100);
+
+  // Encontrar estágio
+  const stage = STAGES.find(s => pct >= s.min && pct <= s.max) || STAGES[0];
+
+  // Calcular custo de inércia
+  const mesMin = faturamento * stage.mesMin;
+  const mesMax = faturamento * stage.mesMax;
+  const anoMin = mesMin * 12;
+  const anoMax = mesMax * 12;
+
+  document.getElementById('r-stage').textContent = stage.name;
+  document.getElementById('r-eff-pct').textContent = stage.eff + '%';
+  document.getElementById('r-eff-fill').style.width = stage.eff + '%';
+  document.getElementById('r-mes').textContent = fmtR(mesMin) + ' – ' + fmtR(mesMax);
+  document.getElementById('r-ano').textContent = fmtR(anoMin) + ' – ' + fmtR(anoMax);
+  document.getElementById('r-desc').innerHTML = stage.desc;
+
+  show('s-result');
+}
+
+function restart() {
+  document.getElementById('fat-input').value = '';
+  answers = new Array(QUESTIONS.length).fill(null);
+  current = 0;
+  show('s-hero');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
