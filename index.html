@@ -1056,7 +1056,7 @@ nav {
   <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center;width:100%;max-width:560px;">
     <div class="eyebrow ai">Coffee Break · Networking</div>
-    <div class="timer-display ai" id="timer-display">20:00</div>
+    <div class="timer-display ai" id="timer-display">15:00</div>
     <svg width="280" height="280" viewBox="0 0 280 280" style="position:absolute;top:72px;left:50%;transform:translateX(-50%);pointer-events:none;">
       <circle cx="140" cy="140" r="120" fill="none" stroke="var(--border)" stroke-width="3"/>
       <circle id="timer-ring-fill" cx="140" cy="140" r="120" fill="none"
@@ -2594,8 +2594,12 @@ function toggleMenu() {
 
 buildMenu();
 
-// TIMER
-const TIMER_DEFAULT = 20 * 60;
+updateTimerUI();
+
+}); // end DOMContentLoaded
+
+// ── TIMER (global scope — chamado via onclick no HTML) ──
+const TIMER_DEFAULT = 15 * 60;
 let timerTotal = TIMER_DEFAULT;
 let timerLeft  = TIMER_DEFAULT;
 let timerRunning = false;
@@ -2645,9 +2649,7 @@ function resetTimer() {
   if (btn) { btn.textContent = '▶ Iniciar'; btn.classList.remove('paused'); }
   updateTimerUI();
 }
-updateTimerUI();
-
-}); // end DOMContentLoaded
+window.addEventListener('DOMContentLoaded', updateTimerUI);
 </script>
 </body>
 </html>
