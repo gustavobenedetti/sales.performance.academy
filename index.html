@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Comercial de Alta Performance · Gustavo Benedetti</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08111e;
+  --bg2: #0d1929;
+  --surface: #0f1f30;
+  --surface2: #162438;
+  --border: #1e3045;
+  --border2: #243a52;
+  --accent: #F97316;
+  --accent-dim: rgba(249,115,22,0.12);
+  --teal: #00e5c0;
+  --teal-dim: rgba(0,229,192,0.08);
+  --blue-light: #4e9fff;
+  --text: #c8d8e8;
+  --muted: #3a5068;
+  --label: #607a90;
+  --white: #ffffff;
+  --nav-h: 52px;
+  --bar-h: 56px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── CURSOR ── */
+@media (hover: hover) {
+  body { cursor: default; }
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--nav-h); padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(8,17,30,0.96); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--label);
+  display: flex; align-items: center; gap: 4px;
+}
+.nav-brand span { color: var(--accent); }
+.nav-counter {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px; color: var(--muted);
+}
+
+/* ── PROGRESS ── */
+.progress-bar {
+  position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 200;
+  height: 2px; background: var(--border);
+}
+.progress-fill {
+  height: 100%; background: var(--accent);
+  transition: width .4s ease;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* ── DECK ── */
+.deck {
+  position: fixed;
+  top: calc(var(--nav-h) + 2px);
+  bottom: var(--bar-h);
+  left: 0; right: 0;
+  overflow: hidden;
+}
+
+/* ── SLIDES ── */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 24px;
+  opacity: 0; pointer-events: none;
+  transform: translateX(40px);
+  transition: opacity .4s ease, transform .4s ease;
+  overflow-x: hidden; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  text-align: center;
+}
+.slide::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .slide { padding: 40px 72px 32px; } }
+.slide.active { opacity: 1; pointer-events: all; transform: translateX(0); }
+.slide.exit-l { opacity: 0; transform: translateX(-40px); }
+.slide.exit-r { opacity: 0; transform: translateX(40px); }
+
+/* ── BG ELEMENTS ── */
+.bg-dashboard {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(78,159,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,159,255,.3) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-radial {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 100%, rgba(13,25,41,0) 0%, rgba(8,17,30,0.8) 70%);
+}
+.glow-orb {
+  position: absolute; border-radius: 50%;
+  pointer-events: none; filter: blur(80px);
+}
+.noise {
+  position: absolute; inset: 0; pointer-events: none; opacity: .018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── ANIM ITEMS ── */
+.ai {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.slide.active .ai { opacity: 1; transform: translateY(0); }
+.slide.active .ai:nth-child(1) { transition-delay: .05s; }
+.slide.active .ai:nth-child(2) { transition-delay: .13s; }
+.slide.active .ai:nth-child(3) { transition-delay: .21s; }
+.slide.active .ai:nth-child(4) { transition-delay: .29s; }
+.slide.active .ai:nth-child(5) { transition-delay: .37s; }
+.slide.active .ai:nth-child(6) { transition-delay: .45s; }
+.slide.active .ai:nth-child(7) { transition-delay: .53s; }
+
+/* ── ATOMS ── */
+.eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--accent);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.eyebrow::before,
+.eyebrow::after { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); opacity: .5; }
+
+.divider-line {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 0 auto;
+}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  height: var(--bar-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(8,17,30,0.96); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+}
+.dots { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; max-width: 70%; }
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--border); transition: all .3s; cursor: pointer;
+}
+.dot.active { background: var(--accent); width: 14px; border-radius: 3px; }
+.arrows { display: flex; gap: 6px; }
+.arr {
+  width: 36px; height: 36px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; user-select: none; transition: all .2s;
+}
+.arr:hover { border-color: var(--accent); color: var(--accent); }
+.arr:active { transform: scale(.92); }
+
+/* ══════════════════════════════
+   S0 — CAPA
+══════════════════════════════ */
+.capa-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  width: 100%; max-width: 820px;
+}
+.capa-imersao {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(13px, 2.5vw, 18px);
+  font-weight: 300; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--text);
+  margin-bottom: 16px; opacity: .7;
+}
+.capa-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 9vw, 100px);
+  font-weight: 900; line-height: 1.0;
+  letter-spacing: -.02em; color: var(--white);
+}
+.capa-title .accent { color: var(--accent); font-style: italic; }
+
+.capa-promotores {
+  font-size: clamp(11px, 1.8vw, 14px); font-weight: 300;
+  color: var(--label); letter-spacing: .04em; margin-top: 24px;
+}
+.capa-promotores em { color: var(--text); font-style: normal; font-weight: 500; }
+.validacao-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 680px; gap: 24px;
+}
+.val-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 4vw, 48px);
+  font-weight: 900; line-height: 1.2;
+  letter-spacing: -.02em; color: var(--white);
+}
+.val-main .accent { color: var(--accent); font-style: italic; }
+.val-main em { color: var(--accent); font-style: italic; }
+
+.val-parabens {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(52px, 10vw, 96px);
+  font-weight: 900; line-height: 1;
+  letter-spacing: -.03em; color: var(--white);
+}
+.val-body {
+  font-size: clamp(16px, 2.8vw, 24px);
+  color: var(--label); line-height: 1.65;
+  font-weight: 300; max-width: 560px;
+}
+.val-hl {
+  color: var(--white); font-weight: 600;
+  font-style: italic;
+}
+.val-heart {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900; line-height: 1.1;
+  letter-spacing: -.02em; color: var(--label);
+}
+.val-heart em { color: var(--accent); font-style: italic; }
+.val-sub {
+  font-size: clamp(14px, 2.2vw, 17px);
+  color: var(--label); line-height: 1.75; max-width: 480px;
+  font-weight: 300;
+}
+
+/* ══════════════════════════════
+   S2 — TRAJETÓRIA + AUTORIDADE
+══════════════════════════════ */
+.autoridade-wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 720px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 0;
+}
+.traj-years {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 32px; align-items: center;
+}
+.traj-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 54px);
+  font-weight: 800; letter-spacing: -.02em;
+  color: var(--white); line-height: 1.1; margin-bottom: 0;
+}
+.traj-title em { color: var(--accent); font-style: italic; }
+.traj-sep {
+  width: 100%; max-width: 320px; height: 1px; margin: 16px auto;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.stats-col {
+  display: flex; flex-direction: row; gap: 16px; width: 100%; justify-content: center;
+}
+.stat-card {
+  flex: 1; max-width: 280px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px 22px;
+  position: relative; overflow: hidden; text-align: center;
+  animation: heartbeat 2.4s ease-in-out infinite;
+}
+.stat-card:nth-child(2) { animation-delay: 1.2s; }
+@keyframes heartbeat {
+  0%,100% { box-shadow: 0 0 0 0 rgba(249,115,22,0); border-color: var(--border); }
+  50%      { box-shadow: 0 0 24px 4px rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.35); }
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.stat-num {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700; color: var(--accent); line-height: 1; display: block; margin-bottom: 8px;
+}
+.stat-label {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: var(--muted); letter-spacing: .04em; line-height: 1.5;
+  font-weight: 400;
+}
+
+/* FORMAÇÃO */
+.formacao-block {
+  background: var(--surface); border: 1px solid rgba(249,115,22,.25);
+  border-radius: 14px; padding: 20px 28px;
+  width: 100%; max-width: 576px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.formacao-block::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.formacao-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+}
+.formacao-items {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.formacao-item { display: flex; flex-direction: column; gap: 4px; }
+.formacao-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(14px, 2.2vw, 18px);
+  font-weight: 700; color: var(--white); line-height: 1.2;
+}
+.formacao-detalhe {
+  font-size: clamp(10px, 1.4vw, 12px);
+  color: var(--muted); letter-spacing: .08em; text-transform: uppercase;
+}
+.formacao-divider {
+  width: 1px; height: 36px;
+  background: linear-gradient(to bottom, transparent, var(--border2), transparent);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════
+   S3 — CASE
+══════════════════════════════ */
+.case-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 800px; gap: 20px;
+}
+.case-eyebrow { font-size: 10px; color: var(--label); letter-spacing: .2em; text-transform: uppercase; }
+.case-numbers {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; flex-wrap: wrap;
+}
+.case-num {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(36px, 9vw, 90px);
+  font-weight: 700; line-height: 1;
+}
+.case-num.before { color: var(--muted); }
+.case-num.after  { color: var(--accent); text-shadow: 0 0 40px rgba(249,115,22,0.4); }
+.case-arrow { font-size: clamp(24px, 5vw, 48px); color: var(--border2); }
+.case-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-dim); border: 1px solid rgba(249,115,22,.25);
+  color: var(--accent); font-size: 11px; font-weight: 700;
+  padding: 7px 20px; border-radius: 100px; letter-spacing: .1em; text-transform: uppercase;
+}
+.case-question {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4vw, 36px);
+  font-weight: 800; color: var(--white); line-height: 1.25;
+}
+.case-question em { color: var(--accent); font-style: italic; }
+
+/* ══════════════════════════════
+   S4 — 3 ENGRENAGENS
+══════════════════════════════ */
+.eng-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 980px; gap: 24px;
+}
+.eng-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5vw, 52px);
+  font-weight: 900; color: var(--white); line-height: 1.05;
+}
+.eng-headline em { color: var(--accent); font-style: italic; }
+.eng-sub {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: var(--label); max-width: 440px; line-height: 1.65; font-weight: 300;
+}
+.eng-cards {
+  display: flex; flex-direction: column; gap: 10px; width: 100%;
+}
+@media (min-width: 560px) { .eng-cards { flex-direction: row; } }
+.eng-card {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 26px 18px 22px; text-align: center;
+  transition: border-color .3s, transform .3s;
+}
+.eng-card:hover { border-color: rgba(249,115,22,.3); transform: translateY(-3px); }
+.eng-top { width: 100%; height: 2px; margin-bottom: 20px; }
+.eng-icon-wrap {
+  width: 50px; height: 50px; border-radius: 14px; border: 1px solid;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; font-size: 20px;
+}
+.eng-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; font-weight: 700; letter-spacing: .14em; margin-bottom: 8px;
+}
+.eng-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(14px, 2.2vw, 17px);
+  font-weight: 700; color: var(--white); line-height: 1.25; margin-bottom: 8px;
+}
+.eng-impact { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.eng-impact strong { color: var(--label); }
+
+.formula-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; flex-wrap: wrap; width: 100%;
+}
+.formula-pill {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 14px;
+  font-size: clamp(10px, 1.6vw, 12px); font-weight: 600; color: var(--text);
+}
+.formula-op { font-size: 16px; color: var(--muted); font-weight: 300; }
+.formula-result {
+  background: var(--accent-dim); border: 1px solid rgba(249,115,22,.3);
+  border-radius: 8px; padding: 9px 14px;
+  font-size: clamp(10px, 1.6vw, 12px); font-weight: 700; color: var(--accent);
+}
+
+.gear-cw  { animation: rotateCW  7s linear infinite; transform-origin: center; }
+.gear-ccw { animation: rotateCCW 9s linear infinite; transform-origin: center; }
+.gear-cw2 { animation: rotateCW 11s linear infinite; transform-origin: center; }
+@keyframes rotateCW  { from{transform:rotate(0deg)}   to{transform:rotate(360deg)} }
+@keyframes rotateCCW { from{transform:rotate(0deg)}   to{transform:rotate(-360deg)} }
+
+/* ══════════════════════════════
+   S5 — 4 NÍVEIS DE CONSCIÊNCIA
+══════════════════════════════ */
+.nc-wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 820px; text-align: left;
+}
+.nc-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 6px; text-align: center;
+}
+.nc-headline em { color: var(--accent); font-style: italic; }
+.nc-sub {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: var(--label); margin-bottom: 24px; line-height: 1.6;
+  max-width: 500px; font-weight: 300; text-align: center; margin-left: auto; margin-right: auto;
+}
+.nc-steps { display: flex; flex-direction: column; gap: 8px; }
+.nc-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 15px 18px;
+  position: relative; overflow: hidden; transition: border-color .3s;
+}
+.nc-step::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--nc-clr, var(--muted));
+}
+.nc-step.hl { border-color: rgba(249,115,22,.3); }
+.nc-step.hl::before { background: var(--accent); }
+.nc-step-num {
+  font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--nc-clr, var(--border));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--nc-clr, var(--muted));
+}
+.nc-step.hl .nc-step-num { border-color: var(--accent); color: var(--accent); }
+.nc-name {
+  font-size: clamp(13px, 2vw, 15px);
+  font-weight: 700; color: var(--white); margin-bottom: 3px;
+}
+.nc-task { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.nc-task strong { color: var(--label); }
+.nc-callout {
+  background: var(--accent-dim); border: 1px solid rgba(249,115,22,.2);
+  border-radius: 12px; padding: 14px 20px; margin-top: 16px;
+  font-size: clamp(12px, 1.8vw, 14px); color: var(--text);
+  font-weight: 600; line-height: 1.5; text-align: center;
+}
+.nc-callout em { color: var(--accent); font-style: normal; }
+
+/* MARCAS */
+.marca-card {
+  background: var(--mc, var(--surface)); border: 1px solid var(--mc-border, var(--border));
+  border-radius: 14px; padding: 20px 18px; flex: 1; min-width: 120px; max-width: 180px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  transition: transform .3s;
+}
+.marca-card:hover { transform: translateY(-4px); }
+.marca-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(15px, 2.2vw, 20px); font-weight: 800; color: var(--white);
+  text-align: center; line-height: 1.2;
+}
+.marca-ideia {
+  font-size: clamp(10px, 1.4vw, 12px); color: var(--muted);
+  line-height: 1.5; text-align: center; font-style: italic;
+}
+
+/* SPA ENTREGÁVEIS */
+.spa-entregavel {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 12px;
+}
+.spa-e-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0; margin-top: 5px;
+}
+.spa-e-text {
+  font-size: clamp(11px, 1.6vw, 13px); color: var(--label);
+  line-height: 1.5;
+}
+.spa-e-text strong { color: var(--text); }
+.spa-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+  transition: border-color .2s;
+}
+.spa-item:hover { border-color: rgba(249,115,22,.3); }
+.spa-n {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  font-weight: 700; color: var(--accent); letter-spacing: .1em; flex-shrink: 0;
+}
+.spa-t { font-size: clamp(12px,1.8vw,14px); font-weight: 600; color: var(--white); }
+.oferta-passo {
+  display: flex; align-items: center; gap: 20px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--op-cor, var(--accent));
+  border-radius: 0 12px 12px 0; padding: 18px 20px;
+  transition: border-color .3s;
+}
+.oferta-passo:hover { border-color: var(--op-cor, var(--accent)); }
+.op-num {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  font-weight: 700; color: var(--op-cor, var(--accent));
+  letter-spacing: .1em; flex-shrink: 0; min-width: 24px;
+}
+.op-content { flex: 1; }
+.op-titulo {
+  font-size: clamp(14px, 2.2vw, 16px); font-weight: 700;
+  color: var(--white); margin-bottom: 4px;
+}
+.op-desc { font-size: clamp(11px, 1.6vw, 13px); color: var(--muted); line-height: 1.6; }
+.op-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; border: 1px solid;
+  border-radius: 100px; padding: 4px 10px; flex-shrink: 0;
+}
+.oferta-seta {
+  font-size: 16px; color: var(--border); padding: 2px 0 2px 24px;
+}
+.funil-etapa {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--fe-cor, var(--accent));
+  border-radius: 0 10px 10px 0; padding: 12px 18px;
+  width: var(--fe-w, 100%); transition: border-color .3s;
+}
+.fe-num {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  font-weight: 700; color: var(--fe-cor, var(--accent));
+  letter-spacing: .1em; flex-shrink: 0; min-width: 24px;
+}
+.fe-nome {
+  font-size: clamp(12px, 1.8vw, 14px); font-weight: 700;
+  color: var(--white); flex-shrink: 0; min-width: 180px;
+}
+.fe-desc { font-size: clamp(10px, 1.4vw, 12px); color: var(--muted); }
+.funil-conector {
+  width: 2px; height: 8px; background: var(--border);
+  margin-left: 24px; flex-shrink: 0;
+}
+
+/* SPIN CARDS */
+.spin-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 20px;
+  position: relative; overflow: hidden;
+  transition: border-color .3s, transform .3s;
+}
+.spin-card:hover { border-color: var(--sc); transform: translateY(-2px); }
+.spin-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--sc);
+}
+.spin-letra {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700; color: var(--sc); line-height: 1; margin-bottom: 6px;
+}
+.spin-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(15px, 2.2vw, 18px);
+  font-weight: 700; color: var(--white); margin-bottom: 10px;
+}
+.spin-desc {
+  font-size: clamp(11px, 1.5vw, 13px); color: var(--muted);
+  line-height: 1.65; margin-bottom: 12px;
+}
+.spin-exemplo {
+  font-size: clamp(10px, 1.4vw, 12px); color: var(--sc);
+  font-style: italic; line-height: 1.5; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.metrica-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 14px; text-align: center;
+  position: relative; overflow: hidden; transition: transform .3s;
+}
+.metrica-card:hover { transform: translateY(-3px); border-color: var(--mc-cor, var(--accent)); }
+.metrica-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--mc-cor, var(--accent));
+}
+.metrica-sigla {
+  font-family: 'Space Mono', monospace; font-size: clamp(18px,3vw,28px);
+  font-weight: 700; color: var(--mc-cor, var(--accent)); margin-bottom: 8px;
+}
+.metrica-nome {
+  font-size: clamp(10px,1.4vw,12px); font-weight: 700; color: var(--white);
+  margin-bottom: 6px; line-height: 1.3;
+}
+.metrica-desc { font-size: clamp(9px,1.2vw,11px); color: var(--muted); line-height: 1.4; }
+
+/* TAXAS PROSPECÇÃO */
+.taxa-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 16px; position: relative; overflow: hidden;
+  transition: transform .3s; text-align: center;
+}
+.taxa-card:hover { transform: translateY(-3px); border-color: var(--tc, var(--accent)); }
+.taxa-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--tc, var(--accent));
+}
+.taxa-num {
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  color: var(--tc, var(--accent)); letter-spacing: .1em; margin-bottom: 10px;
+}
+.taxa-nome {
+  font-size: clamp(12px,1.8vw,14px); font-weight: 700; color: var(--white);
+  margin-bottom: 8px; line-height: 1.3;
+}
+.taxa-desc { font-size: clamp(10px,1.3vw,12px); color: var(--muted); line-height: 1.5; }
+
+/* BENCHMARK BARS */
+.benchmark-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+}
+.bmark-nome {
+  font-size: clamp(11px,1.6vw,13px); color: var(--label);
+  font-weight: 500; min-width: 130px; text-align: right; flex-shrink: 0;
+}
+.bmark-track {
+  flex: 1; height: 8px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+.bmark-fill { height: 100%; border-radius: 4px; }
+.bmark-val {
+  font-family: 'Space Mono', monospace; font-size: clamp(10px,1.4vw,12px);
+  font-weight: 700; min-width: 72px; text-align: left; flex-shrink: 0;
+}
+.proxima-item {
+  display: flex; align-items: center; gap: 24px;
+  padding: 22px 32px; text-align: left;
+  transition: background .3s; border-radius: 12px;
+}
+.proxima-item:hover { background: var(--surface); }
+.proxima-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  letter-spacing: .08em; min-width: 28px; flex-shrink: 0;
+}
+.proxima-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5.5vw, 56px);
+  font-weight: 900; color: var(--white);
+  letter-spacing: -.02em; line-height: 1;
+}
+.proxima-titulo em { color: var(--accent); font-style: italic; }
+.proxima-divider {
+  height: 1px; background: var(--border); margin: 0 32px;
+}
+.timer-display {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(64px, 14vw, 120px);
+  font-weight: 700; color: var(--white);
+  letter-spacing: -.02em; line-height: 1;
+  position: relative; z-index: 2;
+  margin-top: 160px;
+}
+.timer-display.danger { color: var(--accent); animation: timerPulse 1s ease-in-out infinite; }
+@keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.timer-controls { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px; }
+.timer-set-row { display: flex; gap: 8px; justify-content: center; }
+.timer-set-btn {
+  padding: 10px 16px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--label); font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.timer-set-btn:hover { border-color: var(--accent); color: var(--accent); }
+.timer-action-row { display: flex; gap: 10px; justify-content: center; }
+.timer-play-btn {
+  padding: 14px 40px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: 12px; font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 800; cursor: pointer; transition: all .2s;
+  box-shadow: 0 4px 20px rgba(249,115,22,.3); letter-spacing: .04em;
+}
+.timer-play-btn:hover { background: #fb923c; transform: translateY(-1px); }
+.timer-play-btn.paused { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); box-shadow: none; }
+.timer-reset-btn {
+  padding: 14px 24px; background: transparent; border: 1px solid var(--border);
+  border-radius: 12px; color: var(--muted); font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.timer-reset-btn:hover { border-color: var(--muted); color: var(--text); }
+.colab-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 16px; text-align: center;
+  transition: border-color .3s;
+}
+.colab-card:hover { border-color: rgba(249,115,22,.3); }
+.colab-nomes {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(13px, 1.8vw, 16px); font-weight: 700; color: var(--white);
+  margin-bottom: 8px; line-height: 1.3;
+}
+.colab-nomes span { color: var(--accent); }
+.colab-desc {
+  font-size: clamp(11px, 1.4vw, 13px); color: var(--text);
+  font-weight: 500; line-height: 1.4; font-style: italic;
+}
+.qr-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 520px; gap: 16px;
+}
+.qr-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 6vw, 54px);
+  font-weight: 900; color: var(--white); line-height: 1;
+}
+.qr-headline em { color: var(--accent); font-style: italic; }
+.qr-sub {
+  font-size: clamp(13px, 1.8vw, 15px);
+  color: var(--label); line-height: 1.65; max-width: 360px; font-weight: 300;
+}
+.qr-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 22px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.qr-inner { background: #fff; padding: 12px; border-radius: 10px; }
+.qr-label { font-size: 10px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+.qr-stages { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.qr-stage {
+  font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--border); border-radius: 100px; padding: 4px 10px;
+}
+
+/* ══════════════════════════════
+   S7 — PONTE PARA O WILLIAN
+══════════════════════════════ */
+.ponte-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 720px; gap: 16px;
+}
+.ponte-q {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 5vw, 48px);
+  font-weight: 900; color: var(--white); line-height: 1.15;
+}
+.ponte-q em { color: var(--accent); font-style: italic; }
+.ponte-sub {
+  font-size: clamp(13px, 2vw, 16px);
+  color: var(--label); line-height: 1.7; max-width: 420px; font-weight: 300;
+}
+.ponte-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4vw, 36px);
+  font-weight: 700; color: var(--accent); font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <span>@gustavoobenedetti</span>
+    <svg width="16" height="16" viewBox="0 0 40 40" fill="none" style="display:block;flex-shrink:0;">
+      <path d="M20 2l2.8 4.2 4.8-1.8 0.8 5 5 0.8-1.8 4.8 4.2 2.8-4.2 2.8 1.8 4.8-5 0.8-0.8 5-4.8-1.8-2.8 4.2-2.8-4.2-4.8 1.8-0.8-5-5-0.8 1.8-4.8-4.2-2.8 4.2-2.8-1.8-4.8 5-0.8 0.8-5 4.8 1.8z" fill="#0095F6"/>
+      <path d="M13.5 20.5l4.5 4.5 9-9.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="nav-counter" id="counter">01 / 08</div>
+</nav>
+<div class="progress-bar">
+  <div class="progress-fill" id="progress" style="width:12.5%"></div>
+</div>
+
+<div class="deck">
+
+<!-- ═══ S0 — CAPA ═══ -->
+<div class="slide active" id="s0">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(78,159,255,0.06);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:rgba(249,115,22,0.06);right:-100px;bottom:-100px;"></div>
+  <div class="capa-wrap">
+    <div class="capa-imersao ai">I M E R S Ã O</div>
+    <h1 class="capa-title ai">
+      Comercial de<br><span class="accent">Alta Performance</span>
+    </h1>
+    <div class="capa-promotores ai">Evento promovido por <em>Gustavo Benedetti</em> e <em>Willian Wolff</em></div>
+  </div>
+</div>
+
+<!-- ═══ S1 — VALIDAÇÃO ═══ -->
+<div class="slide" id="s1">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="validacao-wrap">
+    <div class="eyebrow ai">Imersão Comercial</div>
+
+    <div class="val-parabens ai">Parabéns!</div>
+
+    <div class="val-body ai">
+      Se você está aqui, significa que ter uma
+      <span class="val-hl">estrutura comercial ainda mais eficiente</span>
+      é algo importante.
+    </div>
+
+    <div class="divider-line ai"></div>
+
+    <div class="val-heart ai">
+      Afinal, <em>vendas é o coração!</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2 — TRAJETÓRIA + AUTORIDADE ═══ -->
+<div class="slide" id="s2">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="autoridade-wrap">
+    <div class="eyebrow ai">Jornada</div>
+
+    <div class="traj-years ai">
+      <h2 class="traj-title">07 anos <em>nas vendas.</em></h2>
+      <h2 class="traj-title">05 anos <em>empreendendo.</em></h2>
+    </div>
+
+    <div class="traj-sep ai"></div>
+
+    <!-- FORMAÇÃO — destaque -->
+    <div class="formacao-block ai">
+      <div class="formacao-label">Formação</div>
+      <div class="formacao-items">
+        <div class="formacao-item">
+          <span class="formacao-nome">Flávio Augusto e Caio Carneiro</span>
+          <span class="formacao-detalhe">Vende-C ao Vivo</span>
+        </div>
+        <div class="formacao-divider"></div>
+        <div class="formacao-item">
+          <span class="formacao-nome">Processos Gerenciais</span>
+          <span class="formacao-detalhe">Graduação</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="traj-sep ai"></div>
+
+    <div class="stats-col ai">
+      <div class="stat-card">
+        <span class="stat-num">+R$500M</span>
+        <span class="stat-label">Em vendas geradas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">80+</span>
+        <span class="stat-label">Empresas atendidas</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S3 — CASE ═══ -->
+<div class="slide" id="s3">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="case-wrap">
+    <div class="case-eyebrow ai">Case de Sucesso · Imobiliária em Florianópolis</div>
+    <div class="case-numbers ai">
+      <span class="case-num before">R$200k</span>
+      <span class="case-arrow">→</span>
+      <span class="case-num after">R$2,5M</span>
+    </div>
+    <div class="case-tag ai">Em menos de 90 dias</div>
+    <div class="divider-line ai"></div>
+    <div class="case-question ai">
+      O que mudou?<br><em>Três engrenagens foram corrigidas.</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S4 — 3 ENGRENAGENS ═══ -->
+<div class="slide" id="s4">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="eng-wrap">
+    <div class="eyebrow ai">A única forma de crescer</div>
+    <h2 class="eng-headline ai">As 3 <em>engrenagens</em><br>do comercial</h2>
+    <div class="eng-cards ai">
+
+      <div class="eng-card">
+        <div class="eng-top" style="background:#F97316"></div>
+        <div class="eng-icon-wrap" style="background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.25)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="gear-cw">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <div class="eng-num" style="color:#F97316">01</div>
+        <div class="eng-name">Canais de Aquisição</div>
+        <div class="eng-impact">Nº de <strong>oportunidades</strong></div>
+      </div>
+
+      <div class="eng-card">
+        <div class="eng-top" style="background:#4e9fff"></div>
+        <div class="eng-icon-wrap" style="background:rgba(78,159,255,.1);border-color:rgba(78,159,255,.25)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4e9fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="gear-ccw">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <div class="eng-num" style="color:#4e9fff">02</div>
+        <div class="eng-name">Processo Comercial</div>
+        <div class="eng-impact"><strong>Taxa de conversão</strong></div>
+      </div>
+
+      <div class="eng-card">
+        <div class="eng-top" style="background:#00e5c0"></div>
+        <div class="eng-icon-wrap" style="background:rgba(0,229,192,.1);border-color:rgba(0,229,192,.25)">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e5c0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="gear-cw2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <div class="eng-num" style="color:#00e5c0">03</div>
+        <div class="eng-name">Construção de Oferta</div>
+        <div class="eng-impact"><strong>Ticket médio</strong></div>
+      </div>
+
+    </div>
+    <div class="formula-row ai">
+      <div class="formula-pill">Nº de oportunidades</div>
+      <div class="formula-op">×</div>
+      <div class="formula-pill">Taxa de conversão</div>
+      <div class="formula-op">×</div>
+      <div class="formula-pill">Ticket médio</div>
+      <div class="formula-op">=</div>
+      <div class="formula-result">Faturamento</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S5 — 4 NÍVEIS DE CONSCIÊNCIA ═══ -->
+<div class="slide" id="s5">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="nc-wrap">
+    <div class="eyebrow ai">O objetivo da venda</div>
+    <h2 class="nc-headline ai">4 níveis de <em>consciência</em></h2>
+    <p class="nc-sub ai">Vender é: aumentar a consciência ao ponto<br>de gerar uma transação financeira.</p>
+    <div class="nc-steps ai">
+      <div class="nc-step" style="--nc-clr:#2a3a4a">
+        <div class="nc-step-num">01</div>
+        <div>
+          <div class="nc-name">Tem um problema e não sabe</div>
+          <div class="nc-task">Tarefa: <strong>despertar</strong> — reconhecer que o problema existe.</div>
+        </div>
+      </div>
+      <div class="nc-step" style="--nc-clr:#3a5068">
+        <div class="nc-step-num">02</div>
+        <div>
+          <div class="nc-name">Tem um problema e sabe</div>
+          <div class="nc-task">Tarefa: <strong>nomear a dor</strong> — entender o que está causando a limitação.</div>
+        </div>
+      </div>
+      <div class="nc-step" style="--nc-clr:#607a90">
+        <div class="nc-step-num">03</div>
+        <div>
+          <div class="nc-name">Sabe e quer uma solução</div>
+          <div class="nc-task">Tarefa: <strong>ver o caminho</strong> — existe uma saída estruturada.</div>
+        </div>
+      </div>
+      <div class="nc-step hl">
+        <div class="nc-step-num">04</div>
+        <div>
+          <div class="nc-name">Sabe e está buscando ativamente</div>
+          <div class="nc-task">Tarefa: <strong>decidir e agir</strong> — comprometer-se com a estruturação.</div>
+        </div>
+      </div>
+    </div>
+    <div class="nc-callout ai">
+      O objetivo desta noite é <em>elevar o seu nível de consciência.</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S6 — QR CODE ═══ -->
+<div class="slide" id="s6">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:500px;height:500px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="qr-wrap">
+    <div class="eyebrow ai">Diagnóstico ao vivo</div>
+    <h2 class="qr-headline ai">Em que estágio<br>está o seu <em>comercial?</em></h2>
+    <p class="qr-sub ai">Aponte a câmera, responda 8 perguntas e descubra onde está a sua maior perda.</p>
+    <div class="qr-box ai">
+      <div class="qr-inner"><canvas id="qr-canvas" width="170" height="170"></canvas></div>
+      <div class="qr-label">Aponte a câmera do celular</div>
+    </div>
+    <div class="qr-stages ai">
+      <div class="qr-stage">Caótico</div>
+      <div class="qr-stage">Reativo</div>
+      <div class="qr-stage">Estruturado</div>
+      <div class="qr-stage">Previsível</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S8 — INTERVALO / COUNTDOWN ═══ -->
+<div class="slide" id="s8">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center;width:100%;max-width:560px;">
+    <div class="eyebrow ai">Coffee Break · Networking</div>
+    <div class="timer-display ai" id="timer-display">20:00</div>
+    <svg width="280" height="280" viewBox="0 0 280 280" style="position:absolute;top:72px;left:50%;transform:translateX(-50%);pointer-events:none;">
+      <circle cx="140" cy="140" r="120" fill="none" stroke="var(--border)" stroke-width="3"/>
+      <circle id="timer-ring-fill" cx="140" cy="140" r="120" fill="none"
+        stroke="var(--accent)" stroke-width="3"
+        stroke-dasharray="753.98" stroke-dashoffset="0"
+        stroke-linecap="round" transform="rotate(-90 140 140)"
+        style="transition:stroke-dashoffset 1s linear;"/>
+    </svg>
+    <div class="timer-controls ai">
+      <div class="timer-set-row">
+        <button class="timer-set-btn" onclick="adjustTime(-300)">−5 min</button>
+        <button class="timer-set-btn" onclick="adjustTime(-60)">−1 min</button>
+        <button class="timer-set-btn" onclick="adjustTime(60)">+1 min</button>
+        <button class="timer-set-btn" onclick="adjustTime(300)">+5 min</button>
+      </div>
+      <div class="timer-action-row">
+        <button class="timer-play-btn" id="timer-play-btn" onclick="toggleTimer()">▶ Iniciar</button>
+        <button class="timer-reset-btn" onclick="resetTimer()">↺ Resetar</button>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;" class="ai">Ajuste o tempo antes de iniciar</p>
+  </div>
+</div>
+
+<!-- ═══ S7 — PONTE PARA O WILLIAN ═══ -->
+<div class="slide" id="s7">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="ponte-wrap">
+    <div class="eyebrow ai">A pergunta que fica</div>
+    <div class="ponte-q ai">
+      Mas o que exatamente<br>as pessoas <em>compram?</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S9 — SUSPENSE WILLIAN ═══ -->
+<div class="slide" id="s9">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(78,159,255,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="ponte-wrap">
+    <div class="eyebrow ai">A seguir</div>
+    <div class="ponte-q ai" style="font-size:clamp(14px,2vw,18px);color:var(--label);font-weight:300;font-family:'Inter',sans-serif;letter-spacing:.04em;">A resposta está com</div>
+    <div class="ponte-name ai" style="font-size:clamp(44px,9vw,96px);">Willian Wolff</div>
+    <div class="divider-line ai"></div>
+    <div class="ponte-q ai" style="font-size:clamp(16px,2.8vw,28px);color:var(--label);font-weight:300;font-family:'Inter',sans-serif;">
+      CEO · Ecossistema Hub
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S10 — WILLIAN: O QUE VENDE? ═══ -->
+<div class="slide" id="s10">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(78,159,255,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="ponte-wrap">
+    <div class="eyebrow ai">Willian Wolff</div>
+    <div class="ponte-q ai">
+      O que as pessoas<br>realmente <em>compram?</em>
+    </div>
+    <div class="divider-line ai"></div>
+    <div class="ponte-q ai" style="font-size:clamp(28px,6vw,72px);color:var(--white);">
+      <em>Pertencimento.</em>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S10 — WILLIAN: MARKETING IDEOLÓGICO ═══ -->
+<div class="slide" id="s11">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(78,159,255,0.04);right:-100px;top:-100px;"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;">
+    <div class="eyebrow ai">Marketing Ideológico</div>
+    <div class="ponte-q ai" style="font-size:clamp(22px,4.5vw,52px);">
+      As maiores marcas do mundo<br>não vendem <em>produtos.</em>
+    </div>
+    <p style="font-size:clamp(13px,2vw,16px);color:var(--label);font-weight:300;max-width:520px;line-height:1.7;" class="ai">
+      Elas vendem uma ideia. Uma identidade. Um lugar onde as pessoas sentem que pertencem.
+    </p>
+  </div>
+</div>
+
+<!-- ═══ S11 — WILLIAN: AS MARCAS ═══ -->
+<div class="slide" id="s12">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(78,159,255,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center;">
+    <div class="eyebrow ai">Pertencimento em ação</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;" class="ai">
+      Marcas que vendem<br><em>quem você é</em>
+    </h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%;max-width:720px;" class="ai">
+      <div class="marca-card" style="--mc:rgba(78,159,255,0.15);--mc-border:rgba(78,159,255,0.3)">
+        <div class="marca-nome">Apple</div>
+        <div class="marca-ideia">Eu sou criativo e diferente</div>
+      </div>
+      <div class="marca-card" style="--mc:rgba(249,115,22,0.1);--mc-border:rgba(249,115,22,0.3)">
+        <div class="marca-nome">TAG Heuer</div>
+        <div class="marca-ideia">Eu sou preciso e ambicioso</div>
+      </div>
+      <div class="marca-card" style="--mc:rgba(0,229,192,0.08);--mc-border:rgba(0,229,192,0.25)">
+        <div class="marca-nome">BMW</div>
+        <div class="marca-ideia">Eu sou bem-sucedido</div>
+      </div>
+      <div class="marca-card" style="--mc:rgba(249,115,22,0.1);--mc-border:rgba(249,115,22,0.3)">
+        <div class="marca-nome">Harley Davidson</div>
+        <div class="marca-ideia">Eu sou livre e rebelde</div>
+      </div>
+      <div class="marca-card" style="--mc:rgba(240,180,41,0.1);--mc-border:rgba(240,180,41,0.3)">
+        <div class="marca-nome">Rolex</div>
+        <div class="marca-ideia">Eu cheguei lá</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S12 — WILLIAN: COLABS ═══ -->
+<div class="slide" id="s13">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(78,159,255,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;">
+    <div class="eyebrow ai">O poder da colaboração</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;" class="ai">
+      Quando dois pertencimentos<br>se <em>encontram</em>
+    </h2>
+    <p style="font-size:clamp(13px,2vw,16px);color:var(--label);font-weight:300;max-width:520px;line-height:1.7;" class="ai">
+      As maiores colabs do mundo não são sobre produto. São sobre a fusão de duas identidades — e o pertencimento que isso cria para quem compra.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:720px;" class="ai">
+      <div class="colab-card">
+        <div class="colab-nomes">Louis Vuitton <span>×</span> Supreme</div>
+        <div class="colab-desc">Luxo parisiense + cultura de rua nova-iorquina</div>
+      </div>
+      <div class="colab-card">
+        <div class="colab-nomes">Nike <span>×</span> Jordan</div>
+        <div class="colab-desc">Performance + cultura do basquete global</div>
+      </div>
+      <div class="colab-card">
+        <div class="colab-nomes">Gucci <span>×</span> Adidas</div>
+        <div class="colab-desc">Alta costura + cultura esportiva global</div>
+      </div>
+      <div class="colab-card">
+        <div class="colab-nomes">Balenciaga <span>×</span> Crocs</div>
+        <div class="colab-desc">Vanguarda do luxo + o ordinário elevado</div>
+      </div>
+      <div class="colab-card">
+        <div class="colab-nomes">CIMED <span>×</span> Toguro</div>
+        <div class="colab-desc">Saúde + cultura fitness e influência digital</div>
+      </div>
+      <div class="colab-card">
+        <div class="colab-nomes">Palace <span>×</span> Ralph Lauren</div>
+        <div class="colab-desc">Skate britânico + preppy americano</div>
+      </div>
+    </div>
+    <div style="background:var(--accent-dim);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:14px 24px;font-size:clamp(13px,2vw,15px);color:var(--text);font-weight:600;max-width:560px;" class="ai">
+      Colabs são a prova de que pertencimento se multiplica — nunca se divide.
+    </div>
+  </div>
+</div>
+<!-- ═══ S13 — FECHAMENTO WILLIAN ═══ -->
+<div class="slide" id="s14">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(78,159,255,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div class="ponte-wrap">
+    <div class="eyebrow ai">Willian Wolff</div>
+    <div class="ponte-q ai" style="font-size:clamp(20px,4vw,44px);max-width:720px;line-height:1.2;">
+      Toda marca que virou ícone parou de vender produto<br>e começou a vender <em>identidade.</em>
+    </div>
+    <div class="divider-line ai"></div>
+    <div class="ponte-q ai" style="font-size:clamp(18px,3.5vw,36px);color:var(--label);font-weight:600;font-family:'Inter',sans-serif;">
+      Quando foi que você<br><span style="color:var(--white)">tomou essa decisão?</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ S14 — PRÓXIMA ENTREGA ═══ -->
+<div class="slide" id="s15">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:40px;">
+    <div class="eyebrow ai">Gustavo Benedetti · Continuação</div>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%;" class="ai">
+      <div class="proxima-item">
+        <span class="proxima-num">01</span>
+        <span class="proxima-titulo">Canais de <em>Aquisição</em></span>
+      </div>
+      <div class="proxima-divider"></div>
+      <div class="proxima-item">
+        <span class="proxima-num">02</span>
+        <span class="proxima-titulo">Processo <em>Comercial</em></span>
+      </div>
+      <div class="proxima-divider"></div>
+      <div class="proxima-item">
+        <span class="proxima-num">03</span>
+        <span class="proxima-titulo">Construção de <em>Oferta</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BLOCO — CANAIS DE AQUISIÇÃO
+═══════════════════════════════════════ -->
+
+<!-- S16 — CAPA CANAIS -->
+<div class="slide" id="s16">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">Bloco 01</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(44px,9vw,100px);font-weight:900;line-height:.95;letter-spacing:-.02em;color:var(--white);" class="ai">
+      Canais de<br><em style="color:var(--accent)">Aquisição</em>
+    </h2>
+    <div class="divider-line ai"></div>
+    <p style="font-size:clamp(14px,2vw,18px);color:var(--label);font-weight:300;max-width:480px;line-height:1.7;" class="ai">
+      A previsibilidade das vendas começa aqui.
+    </p>
+  </div>
+</div>
+
+<!-- S17 — LEAD VS OPORTUNIDADE -->
+<div class="slide" id="s17">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">O primeiro conceito</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,54px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1;" class="ai">
+      Lead não é <em style="color:var(--accent)">oportunidade.</em>
+    </h2>
+
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;" class="ai">
+      <!-- Lead -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Lead</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-weight:700;color:var(--label);margin-bottom:12px;">Qualquer pessoa<br>que entrou pela porta.</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65;">Pode ter interesse. Pode não ter dinheiro. Pode ter dinheiro e não ter interesse. É um contato — não uma chance real de negócio.</div>
+      </div>
+
+      <!-- VS -->
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,36px);font-weight:900;color:var(--border);text-align:center;">vs</div>
+
+      <!-- Oportunidade -->
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.3);border-radius:16px;padding:28px 24px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Oportunidade</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(20px,3vw,28px);font-weight:700;color:var(--white);margin-bottom:16px;">Lead com dois eixos<br><em style="color:var(--accent)">simultaneamente</em> alinhados.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:10px 14px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+            <span style="font-size:14px;font-weight:600;color:var(--white);">Interesse de compra</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:10px 14px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+            <span style="font-size:14px;font-weight:600;color:var(--white);">Potencial financeiro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;" class="ai">
+      <span style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">Sem os dois eixos alinhados, não é oportunidade — é <strong style="color:var(--white)">ruído no pipeline.</strong> E você precisa conhecer a taxa de oportunidade de cada canal.</span>
+    </div>
+  </div>
+</div>
+
+<!-- S18 — CANAL VENCEDOR + DEPENDÊNCIA -->
+<div class="slide" id="s18">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">Canal Vencedor</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Cada negócio tem um<br><em style="color:var(--accent)">canal que vence.</em>
+    </h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Canal Vencedor</div>
+        <div style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.7;">Aquele que entrega a melhor combinação de <strong style="color:var(--white)">custo + qualidade de oportunidade + escalabilidade</strong> para o seu negócio específico.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ef4444,transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ef4444;margin-bottom:10px;">A Armadilha</div>
+        <div style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.7;">Depender de <strong style="color:#ef4444">um único canal</strong> é depender de uma variável que você não controla. Quando ele seca, a empresa para.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:20px;" class="ai">
+      <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--accent);flex-shrink:0;">3</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">A estrutura saudável</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;"><strong style="color:var(--text)">Canal vencedor</strong> + <strong style="color:var(--text)">canal de suporte</strong> + <strong style="color:var(--text)">canal em desenvolvimento.</strong> Nunca dependa de um só.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S19 — TRÁFEGO PAGO -->
+<div class="slide" id="s19">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+    <div style="display:flex;align-items:center;gap:16px;" class="ai">
+      <div class="eyebrow" style="margin-bottom:0;">Tráfego Pago</div>
+    </div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1;" class="ai">
+      O canal mais usado.<br><em style="color:var(--accent)">E o mais mal gerido.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;" class="ai">
+      <div class="metrica-card" style="--mc-cor:#4e9fff">
+        <div class="metrica-sigla">CPM</div>
+        <div class="metrica-nome">Custo por Mil Impressões</div>
+        <div class="metrica-desc">Mede a competição no leilão</div>
+      </div>
+      <div class="metrica-card" style="--mc-cor:#00e5c0">
+        <div class="metrica-sigla">CTR</div>
+        <div class="metrica-nome">Taxa de Clique</div>
+        <div class="metrica-desc">Mede a relevância do criativo</div>
+      </div>
+      <div class="metrica-card" style="--mc-cor:#F97316">
+        <div class="metrica-sigla">CPC</div>
+        <div class="metrica-nome">Custo por Clique</div>
+        <div class="metrica-desc">CPM ÷ CTR — eficiência do anúncio</div>
+      </div>
+      <div class="metrica-card" style="--mc-cor:#8b5cf6">
+        <div class="metrica-sigla">CPL</div>
+        <div class="metrica-nome">Custo por Lead</div>
+        <div class="metrica-desc">O mais monitorado — e o mais enganoso</div>
+      </div>
+      <div class="metrica-card" style="--mc-cor:#ef4444">
+        <div class="metrica-sigla">FREQ</div>
+        <div class="metrica-nome">Frequência</div>
+        <div class="metrica-desc">Acima de 3-4× o criativo queima</div>
+      </div>
+    </div>
+    <div style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:20px 24px;" class="ai">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">O número que ninguém calcula</div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(13px,2vw,16px);color:var(--text);line-height:1.9;">
+          CPL <span style="color:var(--muted)">R$15</span> × taxa de oportunidade <span style="color:var(--muted)">5%</span> = CPO <span style="color:#ef4444;font-weight:700;">R$300</span>
+        </div>
+        <div style="width:1px;height:32px;background:var(--border);flex-shrink:0;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(13px,2vw,16px);color:var(--text);line-height:1.9;">
+          CPL <span style="color:var(--muted)">R$40</span> × taxa de oportunidade <span style="color:var(--muted)">35%</span> = CPO <span style="color:var(--accent);font-weight:700;">R$114</span>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-top:10px;font-style:italic;">Qual é realmente mais barato?</div>
+    </div>
+  </div>
+</div>
+
+<!-- S20 — SOCIAL SELLING -->
+<div class="slide" id="s20">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">Social Selling</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Não é sobre <em style="color:var(--accent)">postar.</em><br>É sobre <em style="color:var(--accent)">prospectar.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ai">
+      <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ef4444;margin-bottom:12px;">O que não é</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:14px;color:var(--muted);display:flex;gap:8px;"><span style="color:#ef4444;">✗</span> Publicar conteúdo e esperar</div>
+          <div style="font-size:14px;color:var(--muted);display:flex;gap:8px;"><span style="color:#ef4444;">✗</span> Curtir e comentar sem estratégia</div>
+          <div style="font-size:14px;color:var(--muted);display:flex;gap:8px;"><span style="color:#ef4444;">✗</span> Presença sem intenção comercial</div>
+        </div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">O que é</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:14px;color:var(--text);display:flex;gap:8px;"><span style="color:var(--accent);">→</span> Interação ativa e estratégica</div>
+          <div style="font-size:14px;color:var(--text);display:flex;gap:8px;"><span style="color:var(--accent);">→</span> Construção de relacionamento intencional</div>
+          <div style="font-size:14px;color:var(--text);display:flex;gap:8px;"><span style="color:var(--accent);">→</span> Prospecção via conexões e conversas</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;" class="ai">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">A métrica central</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div style="text-align:center;flex:1;min-width:100px;">
+          <div style="font-family:'Space Mono',monospace;font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--accent);">X</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Interações ativas</div>
+        </div>
+        <div style="font-size:28px;color:var(--border);display:flex;align-items:center;">→</div>
+        <div style="text-align:center;flex:1;min-width:100px;">
+          <div style="font-family:'Space Mono',monospace;font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--white);">Y</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Respostas recebidas</div>
+        </div>
+        <div style="font-size:28px;color:var(--border);display:flex;align-items:center;">→</div>
+        <div style="text-align:center;flex:1;min-width:100px;">
+          <div style="font-family:'Space Mono',monospace;font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--white);">Z</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">Reuniões geradas</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-top:14px;font-style:italic;">Sem medir esse ratio, social selling vira presença — não canal.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S21 — INDICAÇÕES -->
+<div class="slide" id="s21">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">Indicações</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      O canal com maior<br>taxa de oportunidade.<br><em style="color:var(--accent)">E o menos estruturado.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ai">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">A métrica ignorada</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);font-weight:700;color:var(--white);margin-bottom:10px;">Taxa de geração<br>de indicações</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(11px,1.8vw,13px);color:var(--accent);line-height:1.9;">Clientes que indicaram ÷<br>Total de clientes × 100</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">Se abaixo de 20% → problema de experiência ou ausência de programa estruturado.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">A verdade sobre indicações</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0;margin-top:6px;"></div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6;"><strong style="color:var(--text)">Indicação não gerenciada</strong> é sorte.</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px;"></div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6;"><strong style="color:var(--white)">Indicação gerenciada</strong> é canal.</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;color:var(--muted);">Benchmark de taxa de oportunidade:</div>
+          <div style="font-family:'Space Mono',monospace;font-size:clamp(20px,3.5vw,32px);font-weight:700;color:var(--accent);margin-top:4px;">50 – 70%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S22 — PROSPECÇÃO ATIVA -->
+<div class="slide" id="s22">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">Prospecção Ativa</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1;" class="ai">
+      O canal mais <em style="color:var(--accent)">previsível.</em><br>Quando bem executado.
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" class="ai">
+      <div class="taxa-card" style="--tc:#4e9fff">
+        <div class="taxa-num">01</div>
+        <div class="taxa-nome">Taxa de Resposta</div>
+        <div class="taxa-desc">Quantos respondem ao primeiro contato</div>
+      </div>
+      <div class="taxa-card" style="--tc:#00e5c0">
+        <div class="taxa-num">02</div>
+        <div class="taxa-nome">Taxa de Agendamento</div>
+        <div class="taxa-desc">Dos que respondem, quantos aceitam conversar</div>
+      </div>
+      <div class="taxa-card" style="--tc:#F97316">
+        <div class="taxa-num">03</div>
+        <div class="taxa-nome">Taxa de Qualificação</div>
+        <div class="taxa-desc">Dos que conversam, quantos são oportunidades reais</div>
+      </div>
+      <div class="taxa-card" style="--tc:#22c55e">
+        <div class="taxa-num">04</div>
+        <div class="taxa-nome">Taxa de Conversão</div>
+        <div class="taxa-desc">Das oportunidades, quantas fecham</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;" class="ai">
+      <span style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">Sem medir cada uma dessas taxas, você não sabe <strong style="color:var(--white)">onde o canal quebra.</strong> E continua jogando volume no problema errado.</span>
+    </div>
+  </div>
+</div>
+
+<!-- S23 — TAXA DE OPORTUNIDADE POR CANAL -->
+<div class="slide" id="s23">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;gap:24px;text-align:center;align-items:center;">
+    <div class="eyebrow ai">O número que você precisa ter</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Taxa de oportunidade<br><em style="color:var(--accent)">por canal</em>
+    </h2>
+    <div style="width:100%;max-width:680px;display:flex;flex-direction:column;gap:8px;" class="ai">
+      <div class="benchmark-row" style="--bw:70%"><span class="bmark-nome">Indicação</span><div class="bmark-track"><div class="bmark-fill" style="width:70%;background:#22c55e;"></div></div><span class="bmark-val" style="color:#22c55e;">50 – 70%</span></div>
+      <div class="benchmark-row" style="--bw:55%"><span class="bmark-nome">Eventos</span><div class="bmark-track"><div class="bmark-fill" style="width:55%;background:#4e9fff;"></div></div><span class="bmark-val" style="color:#4e9fff;">40 – 60%</span></div>
+      <div class="benchmark-row" style="--bw:35%"><span class="bmark-nome">Social Selling</span><div class="bmark-track"><div class="bmark-fill" style="width:35%;background:#F97316;"></div></div><span class="bmark-val" style="color:#F97316;">20 – 40%</span></div>
+      <div class="benchmark-row" style="--bw:25%"><span class="bmark-nome">Prospecção Ativa</span><div class="bmark-track"><div class="bmark-fill" style="width:25%;background:#8b5cf6;"></div></div><span class="bmark-val" style="color:#8b5cf6;">15 – 30%</span></div>
+      <div class="benchmark-row" style="--bw:12%"><span class="bmark-nome">Tráfego Pago</span><div class="bmark-track"><div class="bmark-fill" style="width:12%;background:#ef4444;"></div></div><span class="bmark-val" style="color:#ef4444;">5 – 20%</span></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:14px 24px;font-size:clamp(12px,1.8vw,14px);color:var(--label);line-height:1.65;max-width:580px;" class="ai">
+      O canal com <strong style="color:var(--white)">mais volume nem sempre é o melhor.</strong> O melhor canal é o que entrega mais oportunidades reais por real investido.
+    </div>
+  </div>
+</div>
+
+<!-- S24 — PERGUNTAS CANAIS -->
+<div class="slide" id="s24">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:720px;gap:20px;">
+    <div class="eyebrow ai">Canais de Aquisição</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,80px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Você tem alguma<br><em style="color:var(--accent)">pergunta?</em>
+    </h2>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BLOCO — PROCESSO COMERCIAL
+═══════════════════════════════════════ -->
+
+<!-- S25 — CAPA PROCESSO COMERCIAL -->
+<div class="slide" id="s25">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(78,159,255,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">Bloco 02</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(44px,9vw,100px);font-weight:900;line-height:.95;letter-spacing:-.02em;color:var(--white);" class="ai">
+      Processo<br><em style="color:var(--accent)">Comercial</em>
+    </h2>
+    <div class="divider-line ai"></div>
+    <p style="font-size:clamp(14px,2vw,18px);color:var(--label);font-weight:300;max-width:480px;line-height:1.7;" class="ai">
+      Canal traz oportunidade. Processo converte.<br>Sem processo, você paga para desperdiçar.
+    </p>
+  </div>
+</div>
+
+<!-- S26 — MACRO VS MICRO TAXA -->
+<div class="slide" id="s26">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">O erro mais comum</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,54px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Você olha para a macro.<br><em style="color:var(--accent)">Deveria olhar para a micro.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="ai">
+      <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:24px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ef4444;margin-bottom:14px;">Macro-taxa — o erro</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);font-weight:700;color:var(--label);margin-bottom:12px;line-height:1.2;">Quantos entram<br>vs. quantos fecham</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;">Esse número diz que você tem um problema. <strong style="color:var(--text)">Não diz onde.</strong> Sem saber onde o funil quebra, você não consegue corrigir nada — só torcer.</div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:24px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Micro-taxa — a postura correta</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);font-weight:700;color:var(--white);margin-bottom:12px;line-height:1.2;">A taxa de conversão<br>entre cada etapa</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;">Cada vendedor tem suas próprias micro-taxas. Quando você as conhece, sabe <strong style="color:var(--white)">exatamente onde treinar, corrigir e escalar</strong> cada profissional.</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:14px 20px;" class="ai">
+      <span style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">Gestão sem micro-taxa é <strong style="color:var(--white)">achismo.</strong> Você não pode corrigir o que não consegue enxergar.</span>
+    </div>
+  </div>
+</div>
+
+<!-- S27 — O FUNIL: 7 ETAPAS -->
+<div class="slide" id="s27">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">O funil comercial</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,48px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1;" class="ai">
+      Um funil saudável tem <em style="color:var(--accent)">processos<br>mapeados com clareza.</em>
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:6px;width:100%;" class="ai">
+
+      <div class="funil-etapa" style="--fe-cor:#4a5568;--fe-w:100%">
+        <span class="fe-num">00</span><span class="fe-nome">Pendente</span>
+        <span class="fe-desc">Lead chegou — ainda não foi abordado</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#4e9fff;--fe-w:92%">
+        <span class="fe-num">01</span><span class="fe-nome">Abordagem</span>
+        <span class="fe-desc">Primeiro contato realizado</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#8b5cf6;--fe-w:80%">
+        <span class="fe-num">02</span><span class="fe-nome">Apresentação</span>
+        <span class="fe-desc">Solução apresentada ao lead</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#F97316;--fe-w:68%">
+        <span class="fe-num">03</span><span class="fe-nome">Geração de Relacionamento</span>
+        <span class="fe-desc">Investigação — aprofundamento da dor e contexto</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#eab308;--fe-w:56%">
+        <span class="fe-num">04</span><span class="fe-nome">Follow-up Programado</span>
+        <span class="fe-desc">Cadência ativa de acompanhamento</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#00e5c0;--fe-w:44%">
+        <span class="fe-num">05</span><span class="fe-nome">Negociação</span>
+        <span class="fe-desc">Condições, objeções, alinhamento final</span>
+      </div>
+      <div class="funil-conector"></div>
+      <div class="funil-etapa" style="--fe-cor:#22c55e;--fe-w:32%">
+        <span class="fe-num">06</span><span class="fe-nome">Fechamento</span>
+        <span class="fe-desc">Contrato, pagamento, onboarding</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- S28 — SPIN SELLING: INTRODUÇÃO -->
+<div class="slide" id="s28">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">A técnica que separa níveis</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,6vw,72px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1;" class="ai">
+      SPIN <em style="color:var(--accent)">Selling</em>
+    </h2>
+    <p style="font-size:clamp(13px,2vw,16px);color:var(--label);font-weight:300;max-width:600px;line-height:1.75;" class="ai">
+      Desenvolvido por Neil Rackham após estudar <strong style="color:var(--white)">35.000 chamadas de vendas</strong> em 12 países ao longo de 12 anos. A metodologia mais validada empiricamente na história das vendas.
+    </p>
+    <div style="background:var(--surface);border:1px solid rgba(249,115,22,.2);border-radius:14px;padding:20px 32px;max-width:640px;" class="ai">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">A descoberta central</div>
+      <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;color:var(--muted);">Vendedor mediano</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">Foca em <strong style="color:var(--label)">problemas</strong></div>
+        </div>
+        <div style="font-size:28px;color:var(--border);display:flex;align-items:center;">→</div>
+        <div style="text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;color:var(--white);">Vendedor de alto nível</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">Foca em <em style="color:var(--accent);font-style:italic;">implicações</em></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S29 — SPIN: AS 4 PERGUNTAS -->
+<div class="slide" id="s29">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">SPIN Selling — As 4 perguntas</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" class="ai">
+
+      <div class="spin-card" style="--sc:#4e9fff">
+        <div class="spin-letra">S</div>
+        <div class="spin-nome">Situação</div>
+        <div class="spin-desc">Mapeia o contexto atual do cliente. Use com moderação — clientes se irritam com excesso.</div>
+        <div class="spin-exemplo">"Como está estruturado hoje o seu processo comercial?"</div>
+      </div>
+
+      <div class="spin-card" style="--sc:#8b5cf6">
+        <div class="spin-letra">P</div>
+        <div class="spin-nome">Problema</div>
+        <div class="spin-desc">Identifica dores e insatisfações. Vendedores medianos param aqui — e perdem a venda.</div>
+        <div class="spin-exemplo">"Onde você sente que está perdendo mais oportunidades?"</div>
+      </div>
+
+      <div class="spin-card" style="--sc:var(--accent)">
+        <div class="spin-letra">I</div>
+        <div class="spin-nome">Implicação</div>
+        <div class="spin-desc">Expande as consequências do problema não resolvido. <strong style="color:var(--white)">Cria urgência real.</strong> É aqui que a venda acontece.</div>
+        <div class="spin-exemplo">"Se esse problema continuar por 12 meses, qual o impacto no seu faturamento?"</div>
+      </div>
+
+      <div class="spin-card" style="--sc:#22c55e">
+        <div class="spin-letra">N</div>
+        <div class="spin-nome">Need-Payoff</div>
+        <div class="spin-desc">Faz o cliente articular o valor da solução. Quando ele responde, <strong style="color:var(--white)">está vendendo para si mesmo.</strong></div>
+        <div class="spin-exemplo">"O que mudaria na sua operação se esse problema estivesse resolvido?"</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- S30 — FOLLOW-UP -->
+<div class="slide" id="s30">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">O assassino silencioso do pipeline</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Follow-up não é insistência.<br><em style="color:var(--accent)">É responsabilidade comercial.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:20px 14px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ef4444;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,4vw,44px);font-weight:700;color:#ef4444;line-height:1;">80%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">das vendas exigem 5 ou mais contatos</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:20px 14px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ef4444;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,4vw,44px);font-weight:700;color:#ef4444;line-height:1;">44%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">dos vendedores desistem após o 1º contato</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:20px 14px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,4vw,44px);font-weight:700;color:var(--accent);line-height:1;">8%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">fazem 5 ou mais follow-ups</div>
+      </div>
+      <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.25);border-radius:12px;padding:20px 14px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#22c55e;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,4vw,44px);font-weight:700;color:#22c55e;line-height:1;">80%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;">das vendas são fechadas por esses 8%</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:14px 20px;" class="ai">
+      <span style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">Sem cadência estruturada, follow-up é <strong style="color:var(--white)">sorte.</strong> Com cadência, é <em style="color:var(--accent);font-style:italic;">sistema.</em></span>
+    </div>
+  </div>
+</div>
+
+<!-- S31 — CRM -->
+<div class="slide" id="s31">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(249,115,22,0.04);right:-100px;top:-100px;"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">CRM</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Um dia foi <em style="color:var(--muted)">opção.</em><br>Hoje é <em style="color:var(--accent)">obrigação.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:24px;position:relative;overflow:hidden;text-align:center;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;">+29%</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">retenção de clientes em empresas com CRM ativo</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.6;">Salesforce Research</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(78,159,255,.2);border-radius:14px;padding:24px;position:relative;overflow:hidden;text-align:center;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#4e9fff,transparent);"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(32px,5vw,52px);font-weight:700;color:#4e9fff;line-height:1;margin-bottom:8px;">+34%</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">produtividade comercial com gestão via CRM</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.6;">Salesforce Research</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:24px;position:relative;overflow:hidden;text-align:center;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#22c55e,transparent);"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(32px,5vw,52px);font-weight:700;color:#22c55e;line-height:1;margin-bottom:8px;">+28%</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">de fechamentos a mais com uso ativo de CRM</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;opacity:.6;">HubSpot</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 24px;display:flex;align-items:center;gap:16px;" class="ai">
+      <div style="font-size:28px;flex-shrink:0;">🧠</div>
+      <div style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">CRM não é tecnologia. É o <strong style="color:var(--white)">sistema nervoso do processo comercial.</strong> Sem ele, cada saída de vendedor leva o pipeline junto.</div>
+    </div>
+  </div>
+</div>
+
+<!-- S32 — PERGUNTAS PROCESSO COMERCIAL -->
+<div class="slide" id="s32">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:720px;gap:20px;">
+    <div class="eyebrow ai">Processo Comercial</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,80px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Você tem alguma<br><em style="color:var(--accent)">pergunta?</em>
+    </h2>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BLOCO — CONSTRUÇÃO DE OFERTA
+═══════════════════════════════════════ -->
+
+<!-- S33 — CAPA CONSTRUÇÃO DE OFERTA -->
+<div class="slide" id="s33">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(0,229,192,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">Bloco 03</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(44px,9vw,100px);font-weight:900;line-height:.95;letter-spacing:-.02em;color:var(--white);" class="ai">
+      Construção<br><em style="color:var(--accent)">de Oferta</em>
+    </h2>
+    <div class="divider-line ai"></div>
+    <p style="font-size:clamp(14px,2vw,18px);color:var(--label);font-weight:300;max-width:480px;line-height:1.7;" class="ai">
+      O segredo de uma venda bem-sucedida é vender o que é importante para o cliente — não para você.
+    </p>
+  </div>
+</div>
+
+<!-- S34 — O GRANDE ERRO -->
+<div class="slide" id="s34">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">O grande erro</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      A maioria pensa em preço,<br>bônus ou desconto.<br><em style="color:var(--accent)">Mas isso é o final.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;" class="ai">
+      <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ef4444;">O grande erro</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;color:var(--label);line-height:1.2;">Construir uma oferta pensando no que<br><em>eu quero vender</em></div>
+        <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:14px 16px;margin-top:auto;">
+          <div style="font-size:10px;color:#ef4444;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Consequência</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.65;">Ofertas que precisam de desconto para fechar. O preço vira o argumento.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;">
+        <div style="font-size:clamp(20px,3vw,32px);color:var(--border);">→</div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);">O caminho certo</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;color:var(--white);line-height:1.2;">Construir uma oferta pensando no que<br><em style="color:var(--accent)">o cliente considera valioso</em></div>
+        <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.15);border-radius:10px;padding:14px 16px;margin-top:auto;">
+          <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Resultado</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.65;">Quanto maior o valor percebido, menor a discussão sobre preço.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S35 — DENTRO PARA FORA VS FORA PARA DENTRO -->
+<div class="slide" id="s35">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:600px;height:600px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">Dois modelos mentais</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      De onde nasce<br><em style="color:var(--accent)">a sua oferta?</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;text-align:left;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#ef4444;">De dentro para fora</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--text);line-height:1.65;font-style:italic;">"Eu tenho esse produto.<br>Como faço para vender?"</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);">O produto é o ponto de partida. O cliente vira um alvo — não um parceiro.</div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);">De fora para dentro</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.15);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--white);line-height:1.65;font-style:italic;">"O que esse cliente realmente quer conquistar?<br>Como minha solução conecta com isso?"</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;padding-top:8px;border-top:1px solid var(--border);">O cliente é o ponto de partida. A oferta nasce da escuta — não do produto.</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:14px 28px;font-family:'Playfair Display',serif;font-size:clamp(14px,2.2vw,18px);font-weight:700;color:var(--white);font-style:italic;max-width:640px;" class="ai">
+      "A melhor oferta não nasce do seu produto.<br>Nasce do problema que ele resolve."
+    </div>
+  </div>
+</div>
+
+<!-- S36 — O MANUAL DE TRANSFORMAÇÃO -->
+<div class="slide" id="s36">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">A provocação</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Você conhece o manual<br><em style="color:var(--accent)">do seu produto?</em>
+    </h2>
+    <p style="font-size:clamp(13px,2vw,16px);color:var(--label);font-weight:300;max-width:520px;line-height:1.75;" class="ai">Não o manual técnico.<br>O <strong style="color:var(--white)">manual de transformação.</strong></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;text-align:left;" class="ai">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);">Manual técnico</div>
+        <div style="font-size:clamp(13px,2vw,15px);color:var(--label);line-height:1.7;">O que o produto <strong style="color:var(--text)">faz.</strong><br>Funcionalidades, características, especificações.</div>
+        <div style="font-size:12px;color:var(--muted);font-style:italic;padding-top:8px;border-top:1px solid var(--border);">A maioria domina esse. E foca nele na venda — perdendo o cliente.</div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);">Manual de transformação</div>
+        <div style="font-size:clamp(13px,2vw,15px);color:var(--white);line-height:1.7;">O que o produto <em style="color:var(--accent)">transforma</em> na vida do cliente.<br>Resultado, sensação, identidade.</div>
+        <div style="font-size:12px;color:var(--muted);font-style:italic;padding-top:8px;border-top:1px solid var(--border);">Quem domina esse sabe separar o que importa para você vender do que importa para o cliente comprar.</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(249,115,22,.2);border-radius:12px;padding:14px 28px;font-size:clamp(14px,2.2vw,18px);color:var(--text);line-height:1.65;max-width:640px;" class="ai">
+      É exatamente aí que nasce <em style="color:var(--accent);font-style:italic;">uma oferta forte.</em>
+    </div>
+  </div>
+</div>
+
+<!-- S37 — OS 3 PASSOS -->
+<div class="slide" id="s37">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:960px;display:flex;flex-direction:column;gap:24px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">Como construir uma oferta</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,52px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      A oferta fica <em style="color:var(--accent)">sempre para o final.</em><br>O que vem antes é o que define tudo.
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:0;width:100%;" class="ai">
+      <div class="oferta-passo" style="--op-cor:#4e9fff">
+        <div class="op-num">01</div>
+        <div class="op-content">
+          <div class="op-titulo">Ouça antes de ofertar</div>
+          <div class="op-desc">Descubra o que realmente importa para aquele cliente — não o que você supõe que importa. A escuta qualificada é a base de toda oferta forte.</div>
+        </div>
+        <div class="op-tag" style="color:#4e9fff;border-color:rgba(78,159,255,.3);">Investigação</div>
+      </div>
+      <div class="oferta-seta">↓</div>
+      <div class="oferta-passo" style="--op-cor:var(--accent)">
+        <div class="op-num">02</div>
+        <div class="op-content">
+          <div class="op-titulo">Construa valor</div>
+          <div class="op-desc">Mostre a transformação — não apenas a solução. Conecte sua oferta exatamente com o que o cliente revelou ser importante para ele.</div>
+        </div>
+        <div class="op-tag" style="color:var(--accent);border-color:rgba(249,115,22,.3);">Personalização</div>
+      </div>
+      <div class="oferta-seta">↓</div>
+      <div class="oferta-passo" style="--op-cor:#22c55e">
+        <div class="op-num">03</div>
+        <div class="op-content">
+          <div class="op-titulo">Apresente o investimento</div>
+          <div class="op-desc">Preço é consequência — não argumento. O cliente primeiro compra a lógica. Depois compra o investimento.</div>
+        </div>
+        <div class="op-tag" style="color:#22c55e;border-color:rgba(34,197,94,.3);">Fechamento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S38 — AS 3 PERGUNTAS -->
+<div class="slide" id="s38">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">A construção acontece em três perguntas</div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:640px;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(78,159,255,.25);border-radius:14px;padding:22px 28px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#4e9fff;"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#4e9fff;margin-bottom:8px;">01</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--white);">O que o cliente <em style="color:#4e9fff">quer?</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">O desejo consciente — o que ele verbaliza e busca ativamente.</div>
+      </div>
+      <div style="color:var(--border);font-size:20px;">↓</div>
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.25);border-radius:14px;padding:22px 28px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">02</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--white);">O que ele <em style="color:var(--accent)">precisa?</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">A necessidade real — o que ele ainda não conseguiu nomear sozinho.</div>
+      </div>
+      <div style="color:var(--border);font-size:20px;">↓</div>
+      <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.25);border-radius:14px;padding:22px 28px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#22c55e;"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#22c55e;margin-bottom:8px;">03</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--white);">Como minha solução <em style="color:#22c55e">conecta os dois?</em></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">Quem responde isso antes de apresentar o preço fecha mais — e fideliza melhor.</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 24px;font-size:clamp(12px,1.8vw,14px);color:var(--label);line-height:1.65;max-width:600px;" class="ai">
+      Quem vende apenas o que o cliente <strong style="color:var(--text)">quer</strong> faz uma venda.<br>
+      Quem entrega também o que ele <em style="color:var(--accent);font-style:italic;">precisa</em> aumenta satisfação, retenção e LTV.
+    </div>
+  </div>
+</div>
+
+<!-- S39 — FRASE DE FECHAMENTO -->
+<div class="slide" id="s39">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:24px;">
+    <div class="eyebrow ai">Construção de Oferta</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,5.5vw,64px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Oferta não é <em style="color:var(--muted)">preço.</em>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,5.5vw,64px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Oferta é a <em style="color:var(--accent)">percepção de valor</em><br>que você construiu<br>antes de falar o investimento.
+    </div>
+  </div>
+</div>
+
+<!-- S40 — PERGUNTAS CONSTRUÇÃO DE OFERTA -->
+<div class="slide" id="s40">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:720px;gap:20px;">
+    <div class="eyebrow ai">Construção de Oferta</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,80px);font-weight:900;color:var(--white);letter-spacing:-.02em;line-height:1.05;" class="ai">
+      Você tem alguma<br><em style="color:var(--accent)">pergunta?</em>
+    </h2>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     BLOCO — PITCH · SALES PERFORMANCE ACADEMY
+═══════════════════════════════════════ -->
+
+<!-- S41 — VIRADA: PROPÓSITO DA SPA -->
+<div class="slide" id="s41">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:900px;height:900px;background:rgba(249,115,22,0.06);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:24px;">
+    <div class="eyebrow ai">Uma decisão</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,80px);font-weight:900;color:var(--white);line-height:1;letter-spacing:-.02em;" class="ai">
+      Conteúdo de <em style="color:var(--accent)">alto nível</em><br>deveria ser<br>acessível a todos.
+    </h2>
+    <div class="divider-line ai"></div>
+    <p style="font-size:clamp(14px,2.2vw,18px);color:var(--label);font-weight:300;max-width:560px;line-height:1.75;" class="ai">
+      Por anos, esse conteúdo ficou restrito a consultorias caras e mentorias exclusivas. <strong style="color:var(--white)">Isso muda hoje.</strong>
+    </p>
+  </div>
+</div>
+
+<!-- S42 — O CUSTO DE NÃO FAZER NADA -->
+<div class="slide" id="s42">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(239,68,68,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">O diagnóstico que você fez hoje</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,5.5vw,60px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;" class="ai">
+      Não fazer nada<br>também tem um <em style="color:#ef4444">preço.</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;" class="ai">
+      <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ef4444;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(22px,4vw,36px);font-weight:700;color:#ef4444;line-height:1;margin-bottom:8px;">Estágio<br>Caótico</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Custo de inércia:<br><strong style="color:#ef4444;">R$35k – 50k/mês</strong></div>
+      </div>
+      <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(22px,4vw,36px);font-weight:700;color:var(--accent);line-height:1;margin-bottom:8px;">Estágio<br>Reativo</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Custo de inércia:<br><strong style="color:var(--accent);">R$20k – 35k/mês</strong></div>
+      </div>
+      <div style="background:rgba(78,159,255,.06);border:1px solid rgba(78,159,255,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#4e9fff;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(22px,4vw,36px);font-weight:700;color:#4e9fff;line-height:1;margin-bottom:8px;">Estágio<br>Estruturado</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Custo de inércia:<br><strong style="color:#4e9fff;">R$8k – 20k/mês</strong></div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid #ef4444;border-radius:0 12px 12px 0;padding:14px 20px;max-width:640px;" class="ai">
+      <span style="font-size:clamp(13px,2vw,15px);color:var(--text);line-height:1.65;">Esse custo é <strong style="color:var(--white)">recorrente.</strong> Todo mês que passa sem estrutura, ele se repete. A decisão de não agir <em style="color:#ef4444;font-style:italic;">é a decisão mais cara que existe.</em></span>
+    </div>
+  </div>
+</div>
+
+<!-- S43 — PERGUNTA 1 -->
+<div class="slide" id="s43">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(239,68,68,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">01 · Reflexão</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(28px,6vw,72px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Até quando você vai tolerar<br>um <em style="color:#ef4444;">custo de inércia</em><br>dentro do seu negócio?
+    </div>
+  </div>
+</div>
+
+<!-- S43b — PERGUNTA 2 -->
+<div class="slide" id="s43b">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">02 · Reflexão</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(28px,6vw,72px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Em uma escala de <em style="color:var(--accent)">0 a 10</em> —<br>o quão disposto você está<br>para <em style="color:var(--accent)">zerar esse custo?</em>
+    </div>
+  </div>
+</div>
+
+<!-- S43c — PERGUNTA 3 -->
+<div class="slide" id="s43c">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(78,159,255,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">03 · Reflexão</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(26px,5.5vw,66px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Quantos aqui já entenderam que<br>se não derem a devida atenção<br>ao comercial, <em style="color:#4e9fff">não vão prosperar?</em>
+    </div>
+  </div>
+</div>
+
+<!-- S43d — PERGUNTA 4 -->
+<div class="slide" id="s43d">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:20px;">
+    <div class="eyebrow ai">04 · Reflexão</div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,60px);font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-.02em;" class="ai">
+      Quantos sentem que chegaram<br>num <em style="color:var(--accent)">limite do comercial atual?</em>
+    </div>
+    <p style="font-size:clamp(14px,2.2vw,20px);color:var(--label);font-weight:300;max-width:620px;line-height:1.7;" class="ai">
+      Você se esforçou muito até aqui — mas entende que precisa de <strong style="color:var(--white)">ferramentas para ir ao próximo nível.</strong>
+    </p>
+  </div>
+</div>
+
+<!-- S44 — O PRODUTO: SALES PERFORMANCE ACADEMY -->
+<div class="slide" id="s44">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(249,115,22,0.05);right:-100px;top:-100px;"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1000px;display:flex;flex-direction:column;gap:20px;">
+    <div class="eyebrow ai" style="justify-content:flex-start;">É por isso que nasceu</div>
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:32px;align-items:start;" class="ai">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,64px);font-weight:900;color:var(--white);line-height:.95;letter-spacing:-.02em;">
+          Sales<br><em style="color:var(--accent)">Performance</em><br>Academy
+        </h2>
+        <p style="font-size:clamp(13px,1.8vw,15px);color:var(--label);line-height:1.75;font-weight:300;">Capacitar empresários sobre o setor comercial dos seus negócios — de forma <strong style="color:var(--white)">acessível e eficiente.</strong></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <div style="background:var(--accent-dim);border:1px solid rgba(249,115,22,.25);border-radius:100px;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Gustavo Benedetti</div>
+          <div style="background:var(--accent-dim);border:1px solid rgba(249,115,22,.25);border-radius:100px;padding:6px 14px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Willian Wolff</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">6 encontros online · O que você vai dominar</div>
+        <div class="spa-item"><span class="spa-n">01</span><span class="spa-t">Definição, análise crítica e aperfeiçoamento de canais de aquisição</span></div>
+        <div class="spa-item"><span class="spa-n">02</span><span class="spa-t">Construção e implementação de processo comercial</span></div>
+        <div class="spa-item"><span class="spa-n">03</span><span class="spa-t">Técnicas de vendas — da abordagem ao fechamento</span></div>
+        <div class="spa-item"><span class="spa-n">04</span><span class="spa-t">Condução de venda e geração de valor</span></div>
+        <div class="spa-item"><span class="spa-n">05</span><span class="spa-t">Implantação e utilização de CRM</span></div>
+        <div class="spa-item"><span class="spa-n">06</span><span class="spa-t">Construção de oferta na prática</span></div>
+        <div class="spa-item"><span class="spa-n">07</span><span class="spa-t">Práticas de gestão comercial</span></div>
+        <div class="spa-item"><span class="spa-n">08</span><span class="spa-t">Formação de time de vendas</span></div>
+        <div class="spa-item"><span class="spa-n">09</span><span class="spa-t">Análise de dados e indicadores comerciais</span></div>
+        <div style="background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:12px 14px;margin-top:6px;">
+          <div style="font-size:11px;color:var(--accent);font-weight:600;line-height:1.6;">+ Bastidores de operações que faturam +R$40M · + Ferramentas práticas · + Bagagem de Flávio Augusto e Caio Carneiro</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S45 — ÂNCORA DE PREÇO -->
+<div class="slide" id="s45">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:20px;align-items:center;text-align:center;">
+    <div class="eyebrow ai">Quanto custaria esse conteúdo no mercado</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,44px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;" class="ai">
+      Se você fosse buscar<br>isso de forma <em style="color:var(--muted)">fragmentada...</em>
+    </h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;" class="ai">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:left;">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;">Consultoria individual</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(18px,2.5vw,28px);font-weight:700;color:var(--muted);text-decoration:line-through;line-height:1;">R$15.000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">por projeto de estruturação comercial</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:left;">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;">Mentorias premium</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(18px,2.5vw,28px);font-weight:700;color:var(--muted);text-decoration:line-through;line-height:1;">R$8.000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">por acesso a conteúdo de alto nível</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:left;">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;">Cursos e formações</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(18px,2.5vw,28px);font-weight:700;color:var(--muted);text-decoration:line-through;line-height:1;">R$3.000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">sem aplicação prática ao seu negócio</div>
+      </div>
+    </div>
+    <!-- TOTAL RISCADO EM DESTAQUE -->
+    <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:16px;padding:20px 36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;" class="ai">
+      <div style="text-align:center;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Total fragmentado</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(28px,5vw,52px);font-weight:700;color:#ef4444;text-decoration:line-through;line-height:1;">R$26.000</div>
+      </div>
+      <div style="font-size:24px;color:var(--border);">→</div>
+      <div style="text-align:center;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Na SPA — tudo em um lugar</div>
+        <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:var(--white);line-height:1.2;">Por uma fração<br><em style="color:var(--accent)">desse valor.</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S46 — PREÇO PÓS-LANÇAMENTO -->
+<div class="slide" id="s46">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:700px;height:700px;background:rgba(239,68,68,0.04);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:820px;gap:24px;">
+    <div class="eyebrow ai">Sales Performance Academy</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(24px,4.5vw,48px);font-weight:900;color:var(--white);line-height:1.1;letter-spacing:-.02em;" class="ai">
+      Após o lançamento,<br>o investimento será de
+    </h2>
+    <div style="background:var(--surface);border:1px solid rgba(239,68,68,.25);border-radius:20px;padding:32px 56px;position:relative;overflow:hidden;" class="ai">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ef4444,transparent);"></div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Preço regular</div>
+      <div style="font-family:'Space Mono',monospace;font-size:clamp(48px,10vw,100px);font-weight:700;color:var(--muted);text-decoration:line-through;line-height:1;">R$10.000</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:10px;">à vista · ou parcelado</div>
+    </div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,28px);font-weight:700;color:var(--label);line-height:1.4;" class="ai">
+      Mas hoje é diferente.<br><em style="color:var(--accent)">Hoje é lançamento.</em>
+    </div>
+  </div>
+</div>
+
+<!-- S47 (antigo S46) — PREÇO DE LANÇAMENTO EM DESTAQUE -->
+<div class="slide" id="s47">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:900px;height:900px;background:rgba(249,115,22,0.07);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center;">
+    <div style="background:var(--accent-dim);border:1px solid rgba(249,115,22,.35);border-radius:100px;padding:8px 24px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);" class="ai">
+      ⚡ Condição de Lançamento · Exclusiva para hoje
+    </div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,56px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;" class="ai">
+      Sales Performance<br><em style="color:var(--accent)">Academy</em>
+    </h2>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;width:100%;" class="ai">
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.3);border-radius:20px;padding:32px 40px;flex:1;min-width:220px;max-width:300px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);"></div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Parcelado</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(13px,2vw,16px);color:var(--muted);margin-bottom:4px;">12×</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(36px,6vw,60px);font-weight:700;color:var(--accent);line-height:1;">R$500</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">por mês</div>
+      </div>
+      <div style="display:flex;align-items:center;font-size:18px;color:var(--border);">ou</div>
+      <div style="background:rgba(249,115,22,.08);border:2px solid var(--accent);border-radius:20px;padding:32px 40px;flex:1;min-width:220px;max-width:300px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(249,115,22,.15);">
+        <div style="position:absolute;top:12px;right:12px;background:var(--accent);color:var(--bg);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;">Melhor opção</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">À vista</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(13px,2vw,16px);color:#ef4444;margin-bottom:4px;text-decoration:line-through;">R$10.000</div>
+        <div style="font-family:'Space Mono',monospace;font-size:clamp(36px,6vw,60px);font-weight:700;color:var(--white);line-height:1;">R$5.000</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">pagamento único</div>
+      </div>
+    </div>
+    <p style="font-size:clamp(12px,1.8vw,14px);color:var(--muted);max-width:560px;line-height:1.65;" class="ai">
+      Menos do que um mês de custo de inércia — e o investimento que vai eliminar esse custo para sempre.
+    </p>
+  </div>
+</div>
+
+<!-- S47 — FECHAMENTO: QR CODE + DECISÃO -->
+<div class="slide" id="s47">
+  <div class="bg-dashboard"></div>
+  <div class="noise"></div>
+  <div class="glow-orb" style="width:800px;height:800px;background:rgba(249,115,22,0.05);left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+  <div style="position:relative;z-index:1;width:100%;max-width:1040px;display:flex;flex-direction:column;gap:16px;align-items:center;">
+
+    <!-- TÍTULO -->
+    <div class="eyebrow ai">Sales Performance Academy</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,44px);font-weight:900;color:var(--white);line-height:1.05;letter-spacing:-.02em;text-align:center;" class="ai">
+      Um comercial mais robusto<br><em style="color:var(--accent)">começa com uma decisão!</em>
+    </h2>
+
+    <!-- GRID PRINCIPAL -->
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:24px;width:100%;align-items:start;" class="ai">
+
+      <!-- QR CODE -->
+      <div style="background:var(--surface);border:1px solid rgba(249,115,22,.25);border-radius:16px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;">
+        <div style="background:#fff;padding:10px;border-radius:8px;"><canvas id="qr-canvas-spa" width="140" height="140"></canvas></div>
+        <div style="font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;text-align:center;">Garanta sua vaga</div>
+        <div style="font-size:10px;color:var(--accent);font-weight:700;letter-spacing:.06em;text-align:center;">Sales Performance Academy</div>
+      </div>
+
+      <!-- ENTREGÁVEIS -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div class="spa-entregavel">
+          <span class="spa-e-dot"></span>
+          <span class="spa-e-text"><strong>06 encontros semanais</strong> com Gustavo Benedetti e Willian Wolff</span>
+        </div>
+        <div class="spa-entregavel">
+          <span class="spa-e-dot"></span>
+          <span class="spa-e-text">Conteúdo de <strong>alto valor</strong> — mais profundo e prático do que este evento</span>
+        </div>
+        <div class="spa-entregavel">
+          <span class="spa-e-dot"></span>
+          <span class="spa-e-text"><strong>Análise de casos reais</strong> com resolução prática</span>
+        </div>
+        <div class="spa-entregavel">
+          <span class="spa-e-dot"></span>
+          <span class="spa-e-text">Acesso a <strong>ferramentas avançadas</strong> utilizadas por grandes companhias</span>
+        </div>
+        <div class="spa-entregavel">
+          <span class="spa-e-dot"></span>
+          <span class="spa-e-text"><strong>50% de desconto</strong> no CRM Data Crazy — parceiro oficial da SPA</span>
+        </div>
+        <div class="spa-entregavel" style="border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.05);">
+          <span class="spa-e-dot" style="background:var(--accent);"></span>
+          <span class="spa-e-text" style="color:var(--white);"><strong style="color:var(--accent)">01 encontro individual</strong> com os experts para tratar da sua operação</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRASE FINAL -->
+    <div class="divider-line ai"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:clamp(16px,3vw,32px);font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-.02em;text-align:center;" class="ai">
+      Priorize o seu comercial.<br><em style="color:var(--accent)">É ele que sustenta o seu negócio.</em>
+    </div>
+
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="dots" id="dots"></div>
+  <div class="arrows">
+    <div class="arr" onclick="navigate(-1)">←</div>
+    <div class="arr" onclick="navigate(1)">→</div>
+    <div class="arr" onclick="toggleMenu()" title="Menu de slides" style="font-size:11px;font-weight:700;letter-spacing:.04em;width:auto;padding:0 12px;">☰ IR PARA</div>
+  </div>
+</div>
+
+<!-- MENU DE NAVEGAÇÃO RÁPIDA -->
+<div id="slide-menu" style="
+  display:none;position:fixed;bottom:64px;right:16px;z-index:500;
+  background:rgba(8,17,30,0.98);backdrop-filter:blur(20px);
+  border:1px solid #1e3045;border-radius:16px;
+  width:320px;max-height:70vh;overflow-y:auto;
+  box-shadow:0 16px 48px rgba(0,0,0,0.5);
+  scrollbar-width:thin;scrollbar-color:#1e3045 transparent;
+">
+  <div style="padding:14px 18px;border-bottom:1px solid #1e3045;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#607a90;">Navegação Rápida</span>
+    <button onclick="toggleMenu()" style="background:none;border:none;color:#3a5068;cursor:pointer;font-size:16px;line-height:1;">✕</button>
+  </div>
+  <div id="menu-list" style="padding:8px;display:flex;flex-direction:column;gap:2px;"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+const TOTAL = 52;
+let current = 0, busy = false;
+
+const dotsEl = document.getElementById('dots');
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(target) {
+  if (busy || target === current || target < 0 || target >= TOTAL) return;
+  busy = true;
+  const dir = target > current ? 1 : -1;
+  const slides = document.querySelectorAll('.slide');
+  const from = slides[current], to = slides[target];
+  from.classList.remove('active');
+  from.classList.add(dir > 0 ? 'exit-l' : 'exit-r');
+  to.style.transform = dir > 0 ? 'translateX(40px)' : 'translateX(-40px)';
+  to.style.opacity = '0'; to.style.pointerEvents = 'none';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    to.style.transition = 'opacity .4s ease, transform .4s ease';
+    to.style.transform = 'translateX(0)';
+    to.style.opacity = '1';
+    to.style.pointerEvents = 'all';
+    to.classList.add('active');
+    setTimeout(() => {
+      from.classList.remove('exit-l', 'exit-r');
+      to.style.transition = to.style.transform = to.style.opacity = '';
+      busy = false;
+      if (target === 6 && !qrDone) { qrDone = true; drawQR(); }
+      if (target === 48) drawQRSpa();
+    }, 420);
+  }));
+  current = target;
+  updateUI();
+}
+
+function navigate(dir) { goTo(current + dir); }
+
+function updateUI() {
+  document.getElementById('counter').textContent =
+    String(current + 1).padStart(2, '0') + ' / ' + String(TOTAL).padStart(2, '0');
+  document.getElementById('progress').style.width = ((current + 1) / TOTAL * 100) + '%';
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+document.addEventListener('keydown', e => {
+  if (['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) { e.preventDefault(); navigate(1); }
+  else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); navigate(-1); }
+  else if (e.key === 'Home') goTo(0);
+  else if (e.key === 'End')  goTo(TOTAL - 1);
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen().catch(() => {});
+  }
+}, true);
+
+document.body.setAttribute('tabindex', '0');
+document.body.focus();
+document.addEventListener('click', () => document.body.focus());
+
+let tx = 0, ty = 0, tScrollY = 0, tLocked = null;
+document.addEventListener('touchstart', e => {
+  tx = e.touches[0].clientX; ty = e.touches[0].clientY; tLocked = null;
+  const a = document.querySelector('.slide.active');
+  tScrollY = a ? a.scrollTop : 0;
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (tLocked !== null) return;
+  const dx = Math.abs(e.touches[0].clientX - tx);
+  const dy = Math.abs(e.touches[0].clientY - ty);
+  if (dx > 6 || dy > 6) tLocked = dx > dy ? 'h' : 'v';
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  const a = document.querySelector('.slide.active');
+  const moved = Math.abs(a ? a.scrollTop - tScrollY : 0) < 8;
+  const isH = Math.abs(dx) > Math.abs(e.changedTouches[0].clientY - ty) * 1.6 && Math.abs(dx) > 50;
+  if (isH && moved && tLocked !== 'v') navigate(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+let qrDone = false;
+const QR_URL = 'https://gustavobenedetti.com.br/diagnostico';
+
+function drawQR() {
+  const canvas = document.getElementById('qr-canvas');
+  if (!canvas) return;
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
+  s.onload = () => {
+    try {
+      new QRious({ element: canvas, value: QR_URL, size: 170, background: '#ffffff', foreground: '#08111e', level: 'H' });
+    } catch(e) { fallbackQR(canvas); }
+  };
+  s.onerror = () => fallbackQR(canvas);
+  document.head.appendChild(s);
+}
+
+function fallbackQR(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 170, 170);
+  ctx.fillStyle = '#08111e'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center';
+  ctx.fillText('Diagnostico Comercial', 85, 78);
+  ctx.fillText('Gustavo Benedetti', 85, 96);
+}
+
+function drawQRSpa() {
+  const canvas = document.getElementById('qr-canvas-spa');
+  if (!canvas || canvas.dataset.done) return;
+  canvas.dataset.done = '1';
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
+  s.onload = () => {
+    try {
+      new QRious({ element: canvas, value: 'https://form.respondi.app/nYO2xP79', size: 160, background: '#ffffff', foreground: '#08111e', level: 'H' });
+    } catch(e) {}
+  };
+  document.head.appendChild(s);
+}
+
+updateUI();
+
+// ── MENU DE NAVEGAÇÃO RÁPIDA ──
+const SLIDE_NAMES = [
+  'Capa','Validação','Jornada','Case de Sucesso','As 3 Engrenagens',
+  '4 Níveis de Consciência','QR Code · Diagnóstico','A Pergunta',
+  '⏱ Intervalo','Suspense · Willian Wolff','O que as pessoas compram?',
+  'Marketing Ideológico','As Marcas','Colabs','Fechamento · Willian',
+  'Próxima Entrega','Canais de Aquisição · Capa','Lead vs. Oportunidade',
+  'Canal Vencedor','Tráfego Pago','Social Selling','Indicações',
+  'Prospecção Ativa','Taxa de Oportunidade','Perguntas · Canais',
+  'Processo Comercial · Capa','Macro vs. Micro Taxa','O Funil · 7 Etapas',
+  'SPIN Selling · Intro','SPIN · As 4 Perguntas','Follow-up','CRM',
+  'Perguntas · Processo','Construção de Oferta · Capa','O Grande Erro',
+  'Dentro vs. Fora','Manual de Transformação','Os 3 Passos',
+  'As 3 Perguntas','Frase de Fechamento','Perguntas · Oferta',
+  'Pitch · Propósito da SPA','Custo de Não Fazer Nada',
+  'Pergunta 1 · Custo de Inércia','Pergunta 2 · Escala 0 a 10',
+  'Pergunta 3 · Prosperidade','Pergunta 4 · Próximo Nível',
+  'Sales Performance Academy','Âncora de Preço','Preço Pós-Lançamento',
+  'Preço de Lançamento','Fechamento · QR Code',
+];
+
+function buildMenu() {
+  const list = document.getElementById('menu-list');
+  if (!list) return;
+  SLIDE_NAMES.forEach((name, i) => {
+    const btn = document.createElement('button');
+    btn.style.cssText = 'display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;text-align:left;transition:background .15s;';
+    btn.innerHTML = `<span style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:#3a5068;min-width:24px;flex-shrink:0;">${String(i+1).padStart(2,'0')}</span><span class="mn" style="font-size:12px;font-weight:500;color:#c8d8e8;">${name}</span>`;
+    btn.onmouseenter = () => btn.style.background = 'rgba(249,115,22,0.08)';
+    btn.onmouseleave = () => { btn.style.background = i === current ? 'rgba(249,115,22,0.12)' : 'none'; };
+    btn.onclick = () => { goTo(i); toggleMenu(); };
+    list.appendChild(btn);
+  });
+}
+
+let menuOpen = false;
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  const menu = document.getElementById('slide-menu');
+  if (!menu) return;
+  menu.style.display = menuOpen ? 'block' : 'none';
+  if (menuOpen) {
+    const btns = Array.from(list = document.getElementById('menu-list').querySelectorAll('button'));
+    btns.forEach((b, i) => {
+      b.style.background = i === current ? 'rgba(249,115,22,0.12)' : 'none';
+      b.querySelector('.mn').style.color = i === current ? '#F97316' : '#c8d8e8';
+    });
+    if (btns[current]) btns[current].scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+}
+
+buildMenu();
+
+// TIMER
+const TIMER_DEFAULT = 20 * 60;
+let timerTotal = TIMER_DEFAULT;
+let timerLeft  = TIMER_DEFAULT;
+let timerRunning = false;
+let timerInterval = null;
+const RING_C = 2 * Math.PI * 120;
+
+function fmtTimer(s) {
+  const m = Math.floor(s / 60), sec = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+function updateTimerUI() {
+  const disp = document.getElementById('timer-display');
+  const ring  = document.getElementById('timer-ring-fill');
+  if (!disp || !ring) return;
+  disp.textContent = fmtTimer(timerLeft);
+  disp.classList.toggle('danger', timerLeft <= 60 && timerLeft > 0);
+  const pct = timerTotal > 0 ? timerLeft / timerTotal : 0;
+  ring.style.strokeDashoffset = RING_C * (1 - pct);
+}
+function toggleTimer() {
+  const btn = document.getElementById('timer-play-btn');
+  if (!timerRunning) {
+    if (timerLeft <= 0) resetTimer();
+    timerRunning = true;
+    btn.textContent = '⏸ Pausar'; btn.classList.add('paused');
+    timerInterval = setInterval(() => {
+      if (timerLeft > 0) { timerLeft--; updateTimerUI(); }
+      else {
+        clearInterval(timerInterval); timerRunning = false;
+        btn.textContent = '▶ Iniciar'; btn.classList.remove('paused');
+      }
+    }, 1000);
+  } else {
+    timerRunning = false; clearInterval(timerInterval);
+    btn.textContent = '▶ Continuar'; btn.classList.remove('paused');
+  }
+}
+function adjustTime(seconds) {
+  if (timerRunning) return;
+  timerTotal = Math.max(60, timerTotal + seconds);
+  timerLeft  = timerTotal;
+  updateTimerUI();
+}
+function resetTimer() {
+  clearInterval(timerInterval); timerRunning = false; timerLeft = timerTotal;
+  const btn = document.getElementById('timer-play-btn');
+  if (btn) { btn.textContent = '▶ Iniciar'; btn.classList.remove('paused'); }
+  updateTimerUI();
+}
+updateTimerUI();
+
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>
