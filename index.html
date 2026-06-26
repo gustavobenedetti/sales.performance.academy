@@ -2423,7 +2423,7 @@ function goTo(target) {
       to.style.transition = to.style.transform = to.style.opacity = '';
       busy = false;
       if (target === 6 && !qrDone) { qrDone = true; drawQR(); }
-      if (target === 48) drawQRSpa();
+      if (target === 51) drawQRSpa();
     }, 420);
   }));
   current = target;
@@ -2475,7 +2475,7 @@ document.addEventListener('touchend', e => {
 }, { passive: true });
 
 let qrDone = false;
-const QR_URL = 'https://gustavobenedetti.com.br/diagnostico';
+const QR_URL = 'https://gustavobenedetti.github.io/sales.performance.academy/diagnostico-v3.html';
 
 function drawQR() {
   const canvas = document.getElementById('qr-canvas');
@@ -2489,28 +2489,54 @@ function drawQR() {
   };
   s.onerror = () => fallbackQR(canvas);
   document.head.appendChild(s);
+  setTimeout(() => { if (!canvas.dataset.done) fallbackQR(canvas); }, 3000);
 }
 
 function fallbackQR(canvas) {
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 170, 170);
-  ctx.fillStyle = '#08111e'; ctx.font = 'bold 10px monospace'; ctx.textAlign = 'center';
-  ctx.fillText('Diagnostico Comercial', 85, 78);
-  ctx.fillText('Gustavo Benedetti', 85, 96);
+  if (canvas.dataset.done) return;
+  canvas.dataset.done = '1';
+  const parent = canvas.parentElement;
+  const img = document.createElement('img');
+  img.width = 170; img.height = 170;
+  img.style.display = 'block';
+  img.style.borderRadius = '4px';
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=' + encodeURIComponent(QR_URL) + '&color=08111e&bgcolor=ffffff';
+  if (parent) { canvas.style.display='none'; parent.insertBefore(img, canvas); }
 }
 
 function drawQRSpa() {
   const canvas = document.getElementById('qr-canvas-spa');
   if (!canvas || canvas.dataset.done) return;
   canvas.dataset.done = '1';
+  // Use img tag with Google Charts QR API as fallback
+  const url = 'https://form.respondi.app/nYO2xP79';
+  const parent = canvas.parentElement;
+  // Try QRious first, fallback to image
   const s = document.createElement('script');
   s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js';
   s.onload = () => {
     try {
-      new QRious({ element: canvas, value: 'https://form.respondi.app/nYO2xP79', size: 160, background: '#ffffff', foreground: '#08111e', level: 'H' });
-    } catch(e) {}
+      new QRious({ element: canvas, value: url, size: 160, background: '#ffffff', foreground: '#08111e', level: 'H' });
+    } catch(e) { useImgQR(canvas, url, parent); }
   };
+  s.onerror = () => useImgQR(canvas, url, parent);
   document.head.appendChild(s);
+  // Also set a timeout fallback
+  setTimeout(() => {
+    if (!canvas.dataset.rendered) useImgQR(canvas, url, parent);
+  }, 3000);
+}
+
+function useImgQR(canvas, url, parent) {
+  if (canvas.dataset.rendered) return;
+  canvas.dataset.rendered = '1';
+  const img = document.createElement('img');
+  img.width = 160; img.height = 160;
+  img.style.display = 'block';
+  img.style.borderRadius = '4px';
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(url) + '&color=08111e&bgcolor=ffffff';
+  if (parent) { canvas.style.display='none'; parent.insertBefore(img, canvas); }
+  canvas.dataset.rendered = '1';
 }
 
 updateUI();
